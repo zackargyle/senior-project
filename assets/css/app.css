@@ -1,0 +1,74 @@
+html, div {
+	background-color: black;
+}
+
+header {
+	font-size: 2rem;
+	padding: 1rem;
+	color: white;
+}
+
+.game-list {
+	width: 25%;
+	padding: .5rem 0;
+	margin-left: 37.5%;
+	background-color: white;
+	border-bottom: 1px solid black;
+}
+
+.game-list:hover {
+	cursor: pointer;
+	background-color: hsl(570, 100%, 75%);
+}
+
+#newGame h2 {
+	color: white;
+	font-weight: lighter;
+}
+
+#newGame label {
+	color: white;
+}
+
+#gameReview {
+	text-align: center;
+	background-color: black;
+}
+
+#gameReview div h2 {
+	color: white;
+	font-weight: lighter;
+}
+
+#gameReview table {
+	width: 60%;
+	margin-left: 20%;
+	font-size: 1.2vw;
+}
+
+#gameReview th, td {
+	text-align: center;
+	background-color: white;
+	border-top:1px solid black;
+	color: black;
+	font-weight: lighter;
+	padding: 2%;
+}
+
+#gameReview th {
+	color: hsl(210, 30%, 23%);
+	width: 20%;
+}
+
+.sp-button {
+	background-color: white;
+	width: 12%;
+	margin-left: 44%;
+	margin-top: 1%;
+	cursor: pointer;
+	padding: 1% 0%;
+}
+
+.sp-button:hover {
+	background-color: hsl(210, 100%, 75%);
+}

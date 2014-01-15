@@ -1,0 +1,8 @@
+Django==1.6.1
+South==0.8.4
+django-cors-headers==0.12
+djangorestframework==2.3.10
+ecdsa==0.10
+paramiko==1.12.1
+pycrypto==2.6.1
+wsgiref==0.1.2

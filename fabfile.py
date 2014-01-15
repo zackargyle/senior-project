@@ -3,7 +3,7 @@ from fabric.api import local
 local_dir = './'
 
 def refresh():
-	local("rm -rf app/migrations")
+	local("rm -rf api/migrations")
 	local("rm db.sqlite3")
 	local("python manage.py schemamigration --initial app")
 	local("python manage.py syncdb")

@@ -1,0 +1,149 @@
+//
+// Header
+//
+.blog-banner {
+  background: url(../../img/blog/banners/header.png) no-repeat top center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+//
+// Blog
+//
+.blog {
+  // Colors
+  @blogBorder: rgb(209, 209, 209);
+
+  padding-top: 60px;
+  color: @grayDarkText;
+
+  a {
+    color: @greenNav;
+  }
+
+  .main-content {
+    border-right: 1px solid @blogBorder;
+  }
+
+  .main-content > h2 {
+    border-top: 1px solid @blogBorder;
+    margin: 0;
+    padding: 15px 0;
+    text-transform: uppercase;
+  }
+
+  .entry-title {
+    margin-top: 0;
+    padding: 7px 0 3px 0;
+    border-bottom: 1px solid @blogBorder;
+    border-top: 1px solid @blogBorder;
+    text-transform: uppercase;
+    font-size: 23px;
+  }
+  .entry-info {
+    margin: 25px 0 35px 0;
+    .info-spec:first-child {
+      margin-left: 20px;
+    }
+    .info-spec {
+      width: 205px;
+      margin-left: 0;
+      text-transform: uppercase;
+    }
+  }
+
+  .entry-content {
+    font-size: 18px;
+    font-weight: 300;
+    margin-right: 40px;
+    line-height: 32px;
+  }
+
+  #disqus_thread {
+    margin-right: 40px; 
+  }
+
+  .continue-reading {
+    padding: 25px 0;
+    border-bottom: 1px solid @blogBorder;
+    border-top: 1px solid @blogBorder;
+    margin: 25px 0;
+  }
+  .entry-author {
+    padding: 15px 0;
+    border-bottom: 1px solid @blogBorder;
+    border-top: 1px solid @blogBorder;
+    margin: 25px 0;
+  }
+
+  .btn-submit {
+    color: @white;
+    background-color: @greenButton;
+    text-transform: uppercase;
+    border-radius: 5px;
+    padding: 10px 10px;
+    width: 100px;
+    text-align: center;
+    border: none;
+    text-decoration: none;
+  }
+  .btn-submit:hover {
+    opacity: 0.85;
+  }
+
+  .sidebar {
+    margin-left: 0;
+    border-top: 1px solid @blogBorder;
+
+    .sidebar-container {}
+
+    hr {
+      border-bottom: none;
+      border-top: 1px solid @blogBorder;
+    }
+
+    .banner {
+      margin: 40px 0px 40px 40px;
+      color: @white;
+      background-color: @grayDarkText;
+      text-align: center;
+      padding: 25px;
+
+      span {
+        font-size: 16px; 
+        font-weight: 300;
+      }
+      hr { 
+        border-top: 1px solid @white;
+        border-bottom: none; 
+      }
+      a { text-transform: uppercase; }
+      a:hover { text-decoration: none; }
+    }
+
+    .sidebar-meta {
+      margin: 0px 0px 40px 40px;
+      .info-spec {
+        width: 120px;
+        a { color: @grayDarkText;}
+        ul { margin-left: 0; }
+        ul li {
+          display: block;
+        }
+      }
+      h3 {
+        color: @greenNav;
+        text-transform: uppercase;
+        font-size: 18px;
+        font-weight: 400;
+        margin-bottom: 0;
+      }
+    }
+
+    #widget-tools {
+      float: right;
+    }
+  }
+}

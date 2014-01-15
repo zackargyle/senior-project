@@ -1,0 +1,446 @@
+@media (max-width: 480px) {
+  body {
+    min-width: 100px;
+    overflow-x: hidden;
+  }
+
+  [class*="span"] {
+    width: 100%;
+    margin-left: 0 !important;
+  }
+
+  .row {
+    margin-left: 0px;
+  }
+  
+
+  /****************
+    NAV BAR SIMPLE
+  ****************/
+  .simple-nav .nav-container {
+    width: 100%;
+  }
+
+  .navbar .nav.pull-right {
+    width: 100%;
+    margin: 20px 0 0 0;
+  }
+
+  .simple-nav .navbar .nav li {
+    display: block !important;
+  }
+
+  .simple-nav .nav-container .nav-icon {
+    margin-left: 5%;
+  }
+
+  .simple-nav .nav-container .nav li a {
+    background-color: rgba(88, 148, 110, 0.31);
+  }
+
+  /****************
+     NAV BAR ADV
+  ****************/
+
+  nav .nav-container {
+    width: 100%;
+  }
+
+  .navbar .nav li {
+    display: none;
+  }
+
+  .navbar .nav li:last-child {
+    display: block !important;
+  }
+
+  nav .nav-container .nav-icon {
+    margin-left: 5%;
+  }
+
+  nav .navbar .nav.pull-right {
+    float: right;
+    width: 110px;
+    margin-right: 5%;
+    margin-top: 0px;
+  }
+
+
+  /****************
+      SITE HEADER
+  *****************/
+  header {
+    width: 100%;
+    max-width: 480px;
+  }
+
+  header .header-container {
+    width: 100%;
+    padding-top: 150px;
+  }
+
+  /****************
+      OVERVIEW
+  *****************/
+  .overview .overview-container {
+    width: 100%;
+    padding-bottom: 20px;
+  }
+
+  .overview .overview-title {
+    padding-bottom: 20px;
+  }
+
+  .overview-container .content-box,
+  .overview-container h2 {
+    width: 90%;
+    padding-left: 3%; /** Bug? **/
+  }
+  .overview-container .overview-graphic,
+  .overview-container .overview-icons {
+    display: none;
+  }
+
+  /****************
+  WHITE NEWS LETTER
+  *****************/
+
+  .white-newsletter .white-newsletter-container {
+    width: 100%;
+    padding-bottom: 30px;
+    padding-top: 30px;
+  }
+
+  .white-newsletter .white-newsletter-title h2 {
+    width: 90%;
+    padding-left: 5%;
+    font-size: 30px;
+    margin-bottom: 20px;
+  }
+
+  .white-newsletter .form {
+    padding-left: 5%;
+  }
+
+  .white-newsletter .form input, 
+  .white-newsletter .form textarea {
+    width: 40%;
+  }
+
+  /**************
+  DETIAL CONTENT
+  ***************/
+
+  .detail-content .detail-content-container {
+    width: 100%;
+    padding-bottom: 20px;
+    padding-top: 20px;
+  }
+
+  .detail-content .main-content {
+    padding-right: 0;
+    margin-right: 0;
+    border: none;
+  }
+
+  .detail-content .content-title {
+    margin-top: -110px;
+    width: 50%;
+    padding: none;
+
+  }
+
+  .detail-content .content-title h2 {
+    font-size: 30px;
+  }
+
+  .detail-content .content-body {
+    width: 90%;
+    padding-left: 5%;
+    padding-bottom: 0;
+  }
+
+  .detail-content .sub-content {
+    width: 90%;
+    padding-left: 5%;
+  }
+
+  /**************
+      TUITION
+  ***************/
+
+  .tuition .tuition-container {
+    width: 100%;
+    padding-bottom: 20px;
+    padding-top: 20px;
+  }
+
+  .tuition .tuition-title h2 {
+    margin-bottom: 30px;
+  }
+
+  .tuition .conent-square,
+  .tuition .square-frame {
+    width: 100%;
+    border: none;
+    padding: none;
+  }
+
+  .tuition .content-frame {
+    padding-left: 0;
+    margin-left: 0;
+    border-left: none;
+  }
+
+  .tuition .content-body {
+    padding-top: 20px;
+    width: 90%;
+    padding-left: 5%;
+  }
+  .tuition .content-body p {
+    font-size: 20px;
+  }
+
+  /**************
+        TEAM
+  ***************/
+
+  .team-list .team-list-container {
+    width: 100%;
+    padding-bottom: 20px;
+    padding-top: 20px;
+  }
+
+  .team-list .team-row {
+    padding-bottom: 20px;
+  }
+
+  /**************
+        FAQ
+  ***************/
+
+  .faq .faq-container {
+    width: 100%;
+    padding-bottom: 20px;
+    padding-top: 20px;
+  }
+
+  .faq .content-body .question h3 {
+    margin-bottom: 10px;
+  }
+
+  .faq .content-body .question {
+    width: 90%;
+    padding-left: 5%;
+    padding-bottom: 20px;
+  }
+
+  .faq .question-row {
+    margin-bottom: 0px;
+  }
+
+  /**************
+        FAQ
+  ***************/
+  .sub-header .sub-header-container {
+    width: 100%;
+    padding-bottom: 20px;
+    padding-top: 20px;
+  }
+
+  .sub-header h2 {
+    width: 90%;
+    padding-left: 5%;
+    font-size: 24px;
+    line-height: 30px;
+    margin: 0;
+  }
+
+  .sub-header .byline {
+    font-size: 20px;
+  }
+
+  /**************
+        BLOG
+  ***************/
+  .blog-simple .blog-simple-container {
+    width: 100%;
+    padding-bottom: 20px;
+    padding-top: 20px;
+  }
+
+  .blog-simple .content-body {
+    text-align: center;
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .blog-simple .content-body .content-title {
+    width: 90%;
+    padding-left: 5%
+  }
+
+  .blog-simple .content-body .content-post {
+    width: 90%;
+  }
+
+  .blog-simple .content-body p {
+    margin: 0;
+  }
+  /**************
+    GET IN TOUCH
+  ***************/
+  .contact .contact-container {
+    width: 100%;
+    padding-bottom: 20px;
+    padding-top: 20px;
+  }
+
+  .contact [class*="span"] {
+    width: 90%;
+    padding-left: 5%;
+  }
+
+  .contact .form .btn-submit {
+    width: 98%;
+
+    margin: 0;
+  }
+
+  /**************
+     SUB FOOTER
+  ***************/
+  .sub-footer .sub-footer-container {
+    width: 100%;
+    padding-bottom: 20px;
+    padding-top: 40px;
+  }
+
+  .sub-footer .button-box a {
+    margin-left: 35%;
+  }
+
+  .sub-footer .button-box {
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .sub-footer .text-box {
+    border-left: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .sub-footer .text-box h2 {
+    text-align: left;
+    width: 90%;
+    padding-left: 5%;
+    margin: 20px 0 0 0;
+  }
+
+  /**************
+      FOOTER
+  ***************/
+  .footer .footer-container {
+    width: 100%;
+  }
+
+  .footer .social {
+    margin: 0 auto;
+    width: 110px;
+  }
+
+
+  /**************************************
+  *        APPLICATION PAGE
+  **************************************/          
+
+  /***************
+    SHORT Header
+  ***************/
+
+  .banner-short {
+    height: 440px;
+  }
+
+  .banner-short .header-container {
+    padding-top: 138px;
+  }
+
+  /****************
+   Application Form
+  *****************/
+  .application-form .application-form-container {
+    width: 90%;
+    padding: 0px 0 auto 5%;
+  }
+
+  .application-form-base .form-split input,
+  input.span3, textarea.span3, .uneditable-input.span3,
+  input.span7, textarea.span7, .uneditable-input.span7 {
+    width: 95%;
+  }
+
+  .application-form-base .line-input {
+    width: 80%;
+  }
+
+  .application-form-base .errorlist {
+    width: 93%;
+    padding-left: 5%;
+    margin-left: 0px;
+  }
+
+  .application-form-base .submit {
+    width: 100%;
+  }
+  .application-form-base .errorlist li {
+    display: block !important;
+  }
+
+  /**************************************
+  *        APPLICATION PAGE
+  **************************************/       
+
+  .container.blog {
+    width: 100%;
+  }
+
+  .blog .entry-title a {
+    max-width: 90%;
+    padding-left: 5%;
+  }
+
+  .blog .entry-info {
+    width: 90%;
+    padding-left: 5%;
+  }
+
+  .blog .entry-content {
+    margin: 0;
+    width: 90%;
+    padding-left: 5%;
+  }
+
+  .blog .continue-reading a {
+    width: 90%;
+    margin-left: 5%;
+  }
+
+  .blog .sidebar .banner {
+    width: 90%;
+    margin: 5%;
+    padding: 25px 0;
+  }
+
+  .blog #disqus_thread {
+    margin: 0 0 0 5%;
+    width: 90%;
+  }
+
+  .blog .entry-author {
+    width: 90%;
+    padding: 15px 5%;
+  }
+}
