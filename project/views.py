@@ -19,4 +19,7 @@ def review(request, pk):
 				if player not in playerInstances:
 					playerInstances.push(player)
 
-		return render_to_response('GameReview.html', {'game': game, 'teams': teams, 'players': playerInstances})
+		return render_to_response('gamereview.html', {'game': game, 'teams': teams, 'players': playerInstances})
+
+def newgame(request):
+		return render_to_response('newgame.html', {'modes': Game.getModes()})

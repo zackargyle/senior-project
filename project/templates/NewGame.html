@@ -1,35 +1,15 @@
-  <!-- New Game Partial -->
-<div id="newGame">
+{% include 'base/header.html' %}
 
-  <h2>New Game</h2>
+<form>
 
-  <div class="sp-button" ng-click="review()">Review Game</div>
-
-  <label>Teams</label>
-  <select ng-model="selectedTeams" ng-options="team.id as team.name for team in teams" multiple></select>
-
-  <div id="teamInfo">
-    <div ng-show="selectedTeams[0]">
-      <div>You selected the first team</div>
-      <div class="sp-button" ng-click="addPlayer = !addPlayer">Add Player</div>
-      <div ng-show="addPlayer">
-
-        <label>Existing Players</label>
-        <select ng-model="addedPlayer" ng-options="player as player.username for player in players"></select>
-        <button ng-click="newPlayer = !newPlayer">Add New Player</button>
-
-      </div>
-    </div>
-    <div ng-show="selectedTeams[1]">You selected the second team
-      <div class="sp-button" ng-click="addPlayer = !addPlayer">Add Player</div>
-      <div ng-show="addPlayer">
-
-        <label>Existing Players</label>
-        <select ng-model="addedPlayer" ng-options="player as player.username for player in players"></select>
-        <button ng-click="newPlayer = !newPlayer">Add New Player</button>
-
-      </div>
-    </div>
+  <div id="game-mode">
+    <select>
+      {% for mode in modes %}
+      <option value="{{mode}}">{{mode}}</option>
+      {% endfor %}
+    </select>
   </div>
 
-</div>
+</form>
+
+{% include 'base/footer.html' %}

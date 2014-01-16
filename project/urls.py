@@ -7,5 +7,6 @@ from project import views
 urlpatterns = patterns('backend.views',
                        url(r'^admin/', include(admin.site.urls)),
                        url(r'^$', views.index, name='home'),
+                       url(r'^newgame$', views.newgame, name='new game'),
                        url(r'^review/(?P<pk>[0-9]+)$', views.review, name='review'),
                        url(r'^', include('api.urls')))
