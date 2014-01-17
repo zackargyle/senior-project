@@ -8,7 +8,6 @@ def index(request):
 		return render_to_response('homepage.html', {'games': games})
 
 def review(request, pk):
-
 		game = Game.objects.get(pk=pk)
 		teams = Team.objects.filter(game=game)
 		playerInstances = PlayerInstance.objects.filter(game=game).order_by('-score')
@@ -22,4 +21,5 @@ def review(request, pk):
 		return render_to_response('gamereview.html', {'game': game, 'teams': teams, 'players': playerInstances})
 
 def newgame(request):
-		return render_to_response('newgame.html', {'modes': Game.getModes()})
+		guns = Gun.objects.all().order_by('frequency')
+		return render_to_response('newgame.html', {guns: guns})

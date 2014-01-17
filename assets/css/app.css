@@ -8,10 +8,23 @@ header {
 	color: white;
 }
 
+.sp-button {
+	background-color: white;
+	width: 15%;
+	margin-left: 42.5%;
+	margin-top: 1%;
+	cursor: pointer;
+	padding: 1.5% 1%;
+}
+
+.sp-button:hover {
+	background-color: hsl(210, 100%, 75%);
+}
+
 .game-list {
-	width: 25%;
+	width: 30%;
 	padding: .5rem 0;
-	margin-left: 37.5%;
+	margin-left: 35%;
 	background-color: white;
 	border-bottom: 1px solid black;
 }
@@ -19,15 +32,6 @@ header {
 .game-list:hover {
 	cursor: pointer;
 	background-color: hsl(570, 100%, 75%);
-}
-
-#newGame h2 {
-	color: white;
-	font-weight: lighter;
-}
-
-#newGame label {
-	color: white;
 }
 
 #gameReview {
@@ -51,7 +55,6 @@ header {
 	background-color: white;
 	border-top:1px solid black;
 	color: black;
-	font-weight: lighter;
 	padding: 2%;
 }
 
@@ -60,15 +63,45 @@ header {
 	width: 20%;
 }
 
-.sp-button {
-	background-color: white;
-	width: 12%;
-	margin-left: 44%;
-	margin-top: 1%;
-	cursor: pointer;
-	padding: 1% 0%;
+#newGame {
+	width: 60%;
+	margin-left: 20%;
+	text-align: center;
 }
 
-.sp-button:hover {
-	background-color: hsl(210, 100%, 75%);
+#newGame h3 {
+	color: white;
+	font-weight: lighter;
+}
+
+#newGame button {
+	margin-bottom: .5em;
+	padding: .4em .6em;
+	background-color: white;
+	border: none;
+	border-radius: 3px;
+	font-size: 1.4rem;
+}
+
+#newGame input {
+	height: 1.8rem;
+	font-size: 1rem;
+}
+
+#newGame table {
+	width: 100%;
+}
+
+#newGame td {
+	padding: 0;
+	height: 2.5rem;
+}
+
+#newGame td select {
+	margin-top: .5rem;;
+}
+
+#newGame table select {
+	height: 2em;
+	width: 15rem;
 }

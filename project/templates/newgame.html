@@ -1,15 +1,71 @@
 {% include 'base/header.html' %}
 
-<form>
-
-  <div id="game-mode">
-    <select>
-      {% for mode in modes %}
-      <option value="{{mode}}">{{mode}}</option>
-      {% endfor %}
+<div id="newGameWrapper" ng-controller="newGameCtrl">
+  <div id="newGame">
+    <h3> Game Mode </h3>
+    <select id="newGameMode" ng-model="game.mode">
+      <option value="JUGGERNAUT">Juggernaut</option>
+      <option value="TEAMS">Teams</option>
     </select>
-  </div>
 
-</form>
+    <form id="newGameTeams" ng-show="game.mode == 'TEAMS'">
+      <h3>Add Team</h3>
+      <input type="text" ng-model="teamName">
+      <button id="addTeam" ng-click="addTeam()">+</button>
+    </form>
+
+    <div ng-show="game.teams.length">
+      <h3>--- Teams ---</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Team Name</th>
+          </tr>
+        </thead>
+        <tbody id="newTeamsList">
+          <tr ng-repeat="team in game.teams">
+            <td>{$ team $}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <form id="newGamePlayers" ng-show="game.mode">
+      <h3>Add Player</h3>
+      <input type="text" ng-model="player.username">
+      <button id="addPlayer" ng-click="addPlayer()">+</button>
+    </form>
+
+    <div ng-show="game.players.length">
+      <h3>--- Players ---</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th ng-show="game.mode =='TEAMS'">Team</th>
+            <th>Gun</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="player in game.players|orderBy:team">
+            <td>{$ player.username $}</td>
+            <td ng-show="game.mode =='TEAMS'">
+              <select ng-model="player.team" ng-options="team for team in game.teams"></select>
+            </td>
+            <td>
+              <select ng-model="player.gun" ng-options="gun.id as ('id: ' + gun.id + ', frequency: ' + gun.frequency) for gun in guns"></select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sp-button" ng-click="startGame()" ng-show="game.mode && game.players.length">Start Game!</div>
+    <div class="sp-button" goto="">Back</div>
+
+  </div>
+</div>
+
+<!-- <script src="../assets/js/jquery.min.js"></script> -->
 
 {% include 'base/footer.html' %}

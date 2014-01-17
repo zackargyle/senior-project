@@ -14,6 +14,7 @@ urlpatterns = patterns('api.views',
                        url(r'^shots$', views.ShotList.as_view(), name='shot-list'),
                        url(r'^shots/(?P<pk>[0-9]+)$', views.ShotDetail.as_view(), name='shot-detail'),
                        url(r'^sync/(?P<pk>[0-9]+)$', views.Sync.as_view(), name='game-sync'),
+                       url(r'^start$', views.GameStart.as_view(), name='game-start'),
                        url(r'^teams$', views.TeamList.as_view(), name='team-list'),
                        url(r'^teams/(?P<pk>[0-9]+)$', views.TeamDetail.as_view(), name='team-detail'))
 

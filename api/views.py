@@ -6,6 +6,7 @@ from django.http import HttpResponseBadRequest
 
 from rest_framework import generics
 from rest_framework import permissions
+from rest_framework.views import APIView
 from rest_framework.response import Response
 
 
@@ -92,8 +93,54 @@ class TeamDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Team
     serializer_class = TeamSerializer
 
+class GameStart(APIView):
+    ''' Start game with posted game data '''
+    permission_classes = ()
+
+    def post(self, request):
+        data = request.DATA
+        players = data.players
+        teams = data.teams
+        print data
+        print players
+        print teams
+
+        game = Game(mode=data.mode, state="PLAYING", time_limit=data.time_limit, score_limit=data.score_limit)
+        game.save()
+        print game
+
+        if teams is not None:
+            setupTeams(teams, players, game)
+        else:
+            setupPlayers(players, game)
+
+        return Response({'game': game})
+
+    def setupTeams(teams, players, game):
+        for team_name in teams:
+            team = Team(name=team_name, game=game, score=0)
+            team.save()
+            print team
+            for p in players:
+                if p.team == team_name:
+                    player = Player.objects.get_or_create(username=p.username)
+                    player.save()
+                    instance = PlayerInstance(gun=p.gun, player=player, team=team, game=game, num_shots=0, score=0)
+                    instance.save()
+                    print instance
+
+    def setupPlayersOnly(players, game):
+        for p in players:
+            player = Player.objects.get_or_create(username=p.username)
+            player.save()
+            print player
+            instance = PlayerInstance(gun=p.gun, player=player, team=team, game=game, num_shots=0, score=0)
+            instance.save()
+            print instance
+
 
 class Sync(generics.UpdateAPIView):
+    ''' Sync game data with posted data, return game data '''
     permission_classes = (permissions.IsAuthenticated,)
     model = Game
 

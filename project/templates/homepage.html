@@ -2,11 +2,11 @@
 
   <div id="main" style="text-align:center">
     <img src="assets/img/logo.png">
-    <div class="sp-button" onclick="goto('newgame')">New Game</div>
+    <div class="sp-button goto" goto="newgame">New Game</div>
     <div>
     	<header>Review a Game</header>
 	    	{% for game in games %}
-	    	<div class="game-list" onclick="goto('review/' + {{game.id}})">Time: {{game.time_played|date:"N-j, P"}}, Mode: {{game.mode}} </div>
+	    	<div class="game-list" goto="review/{{game.id}}">Time: {{game.time_played|date:"N-j, P"}}, Mode: {{game.mode}} </div>
 	    	{% endfor %}
 	  </div>
   </div>

@@ -1,21 +1,66 @@
-var BASE_URL = "http://localhost:8001/";
+//var BASE_URL = "http://localhost:8001/";
+var BASE_URL = "http://lasertag.byu.edu/";
 
-var game = {
-	mode: null,
-	state: null,
-	time_limit: null,
-	score_limit: null
-}
+var module1 = angular.module('lasertag', ['lasertag.directives']);
 
-var goto = function(endpoint) {
-	window.location = BASE_URL + endpoint;
-}
+module1.config(function($interpolateProvider) {
+    $interpolateProvider.startSymbol('{$');
+    $interpolateProvider.endSymbol('$}');
+});
 
-var createGame = function(mode) {
-	game.mode = mode;
-	game.state = "NEW";
-	game.time_limit = time_limit;
-	game.score_limit = score_limit;
-	// post game
-	// callback game = response
-}
+module1.controller('newGameCtrl', function($scope, $http) {
+  $scope.game = {
+  	mode: null,
+  	teams: [],
+  	players: [],
+  	time_limit: null,
+  	score_limit: null
+  };
+  $scope.player = {
+  	username: "",
+  	team: "",
+  	gun: null
+  };
+
+  $http.get(BASE_URL + "guns")
+  	.success(function(guns) {
+	  	$scope.guns = guns;
+	});
+
+  $scope.addTeam = function() {
+  	$scope.game.teams.push(angular.copy($scope.teamName));
+  	$scope.teamName = "";
+  }
+
+  $scope.addPlayer = function() {
+  	$scope.game.players.push(angular.copy($scope.player));
+  	$scope.player.username = "";
+  }
+
+  $scope.startGame = function() {
+  	if ($scope.game.mode !== "TEAMS") {
+  		$scope.game.teams = null;
+  	}
+  	console.log($scope.game);
+  	// $http.post(BASE_URL + "start", $scope.game)
+  	// 	.success(function(response) {
+  	// 		console.log(response);
+  	// 		alert("Game Started");
+  	// });
+  }
+
+});
+
+var module2 = angular.module('lasertag.directives', []);
+
+module2.directive('goto', function () {
+ 		return {
+ 			restrict: 'A',
+  		link: function (scope, elem, attrs) {
+  			elem.bind("click", function() {
+  				console.log(attrs);
+  				window.location = BASE_URL + attrs["goto"];
+  			});
+  		}
+    }
+});
