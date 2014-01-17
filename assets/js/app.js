@@ -1,5 +1,5 @@
-//var BASE_URL = "http://localhost:8001/";
-var BASE_URL = "http://lasertag.byu.edu/";
+var BASE_URL = "http://localhost:8001/";
+// var BASE_URL = "http://lasertag.byu.edu/";
 
 var module1 = angular.module('lasertag', ['lasertag.directives']);
 
@@ -41,12 +41,11 @@ module1.controller('newGameCtrl', function($scope, $http) {
   	if ($scope.game.mode !== "TEAMS") {
   		$scope.game.teams = null;
   	}
-  	console.log($scope.game);
-  	// $http.post(BASE_URL + "start", $scope.game)
-  	// 	.success(function(response) {
-  	// 		console.log(response);
-  	// 		alert("Game Started");
-  	// });
+  	$http.post(BASE_URL + "start", $scope.game)
+  		.success(function(response) {
+  			console.log(response);
+  			alert("Game Started");
+  	});
   }
 
 });

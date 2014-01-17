@@ -96,47 +96,57 @@ class TeamDetail(generics.RetrieveUpdateDestroyAPIView):
 class GameStart(APIView):
     ''' Start game with posted game data '''
     permission_classes = ()
+    authentication_classes = ()
 
     def post(self, request):
         data = request.DATA
-        players = data.players
-        teams = data.teams
         print data
+        players = data["players"]
         print players
+        teams = data["teams"]
         print teams
 
-        game = Game(mode=data.mode, state="PLAYING", time_limit=data.time_limit, score_limit=data.score_limit)
+        game = Game(mode=data["mode"], state="PLAYING", time_limit=data["time_limit"], score_limit=data["score_limit"])
         game.save()
         print game
 
         if teams is not None:
-            setupTeams(teams, players, game)
+            setupTeamsAndPlayers(teams, players, game)
         else:
-            setupPlayers(players, game)
+            setupPlayersOnly(players, game)
 
-        return Response({'game': game})
+        return Response({'game': game.id})
 
-    def setupTeams(teams, players, game):
-        for team_name in teams:
-            team = Team(name=team_name, game=game, score=0)
-            team.save()
-            print team
-            for p in players:
-                if p.team == team_name:
-                    player = Player.objects.get_or_create(username=p.username)
-                    player.save()
-                    instance = PlayerInstance(gun=p.gun, player=player, team=team, game=game, num_shots=0, score=0)
-                    instance.save()
-                    print instance
+def setupTeamsAndPlayers(teams, players, game):
+    for team_name in teams:
+        team = Team(name=team_name, game=game, score=0)
+        team.save()
 
-    def setupPlayersOnly(players, game):
         for p in players:
-            player = Player.objects.get_or_create(username=p.username)
+            if p["team"] == team_name:
+                player = None
+                try:
+                    player = Player.objects.get(username=p["username"])
+                except ObjectDoesNotExist:
+                    player = Player(username=p["username"])
+                    player.save()
+                gun = Gun.objects.get(pk=p["gun"])
+                instance = PlayerInstance(gun=gun, player=player, team=team, game=game, num_shots=0, score=0)
+                instance.save()
+
+def setupPlayersOnly(players, game):
+    for p in players:
+        player = None
+        try:
+            player = Player.objects.get(username=p["username"])
+        except ObjectDoesNotExist:
+            player = Player(username=p["username"])
             player.save()
-            print player
-            instance = PlayerInstance(gun=p.gun, player=player, team=team, game=game, num_shots=0, score=0)
-            instance.save()
-            print instance
+
+        gun = Gun.objects.get(pk=p["gun"])
+
+        instance = PlayerInstance(gun=gun, player=player, team=None, game=game, num_shots=0, score=0)
+        instance.save()
 
 
 class Sync(generics.UpdateAPIView):
