@@ -12,6 +12,7 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
         Token.objects.create(user=instance)
 
 class Gun(models.Model):
+    id = models.IntegerField(primary_key=True)
     frequency = models.IntegerField()
 
     def __unicode__(self):
@@ -60,6 +61,7 @@ class Game(models.Model):
     ''' Model features for a Game '''
 
     GAME_MODES = (
+        ('FREE', 'Free for all'),
         ('JUGGERNAUT', 'Juggernaut'),
         ('TEAMS', 'Teams'),
         ('FLAG', 'Capture the Flag'),
@@ -67,11 +69,11 @@ class Game(models.Model):
 
     GAME_STATES = (
         ('NEW', 'New'),
-        ('PLAYING', 'In Progress'),
+        ('PLAYING', 'Playing'),
         ('FINISHED', 'Finished'),
     )
 
-    mode = models.CharField(max_length=50, choices=GAME_MODES, default='TEAMS')
+    mode = models.CharField(max_length=50, choices=GAME_MODES, default='FREE')
     state = models.CharField(max_length=20, choices=GAME_STATES, default='NEW')
     time_limit = models.IntegerField(blank=True, null=True)
     score_limit = models.IntegerField(blank=True, null=True)

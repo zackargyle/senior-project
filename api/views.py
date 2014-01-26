@@ -93,24 +93,83 @@ class TeamDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Team
     serializer_class = TeamSerializer
 
+
+class GameJoin(generics.UpdateAPIView):
+    permission_classes = ()
+    authentication_classes = ()
+    model = Game
+
+    '''
+        lasertag.byu.edu/join/<game_id>
+        {
+            "team": null,
+            "username": "psycho",
+            "gun": 4
+        }
+    '''
+
+    def put(self, request, pk, format=None):
+        data = request.DATA
+        game = Game.objects.get(id=pk)
+
+        team = None
+        try:
+            team = Team.objects.get(id=data["team"])
+        except ObjectDoesNotExist:
+            pass
+
+        gun = None
+        try:
+            gun = Gun.objects.get(id=data["gun"])
+        except ObjectDoesNotExist:
+            pass
+
+        player = None
+        try:
+            player = Player.objects.get(username=data["username"])
+        except ObjectDoesNotExist:
+            player = Player(username=data["username"])
+            player.save()
+
+        instance = PlayerInstance(gun=gun, player=player, team=team, game=game, num_shots=0, score=0)
+        instance.save()
+
+        return Response({'game': game.id})
+
+
 class GameStart(APIView):
-    ''' Start game with posted game data '''
     permission_classes = ()
     authentication_classes = ()
 
+    '''
+        lasertag.byu.edu/start
+        {
+            "mode": "TEAMS",
+            "players": [{
+                    "gun": 3,
+                    "team": "googlers",
+                    "username": "mac the knife"
+                },{
+                    "gun": 4,
+                    "team": "bingers",
+                    "username": "jack the ripper"
+                }
+            ],
+            "teams": ["googlers", "bingers"],
+            "score_limit": null,
+            "time_limit": null
+        }
+    '''
+
     def post(self, request):
         data = request.DATA
-        print data
         players = data["players"]
-        print players
         teams = data["teams"]
-        print teams
 
         game = Game(mode=data["mode"], state="PLAYING", time_limit=data["time_limit"], score_limit=data["score_limit"])
         game.save()
-        print game
 
-        if teams is not None:
+        if data["mode"] == "TEAMS":
             setupTeamsAndPlayers(teams, players, game)
         else:
             setupPlayersOnly(players, game)
@@ -150,17 +209,25 @@ def setupPlayersOnly(players, game):
 
 
 class Sync(generics.UpdateAPIView):
-    ''' Sync game data with posted data, return game data '''
     permission_classes = (permissions.IsAuthenticated,)
     model = Game
+
+    '''
+        lasertag.byu.edu/sync/<game_id>
+        {
+            "gun": 3,
+            "shots_fired": 15,
+            "hits_taken": [4,4,4]
+        }
+    '''
 
     def put(self, request, pk, format=None):
         game = Game.objects.get(id=pk)
         data = request.DATA
+        print data
 
         try:
-            player = Player.objects.get(username=data["username"])
-            player_instance = PlayerInstance.objects.get(game=game, player=player)
+            player_instance = PlayerInstance.objects.get(game=game, gun__id=data["gun"])
             player_instance.num_shots = data["shots_fired"]
             player_instance.save()
 
@@ -218,16 +285,6 @@ def updateShots(game, hits, player_hit):
         player_shooting.save()
 
         player_hit.score -= 10
+        if player_hit.score <= 0:
+            player_hit.score = 0
         player_hit.save()
-
-'''
-
-lasertag.byu.edu/sync/<game_id>
-
-{
-    "username": "zack",
-    "shots_fired": 15,
-    "hits_taken": [110000,110000,110000,120000,130000,130000]
-}
-
-'''

@@ -1,0 +1,36 @@
+/* CONSTANTS */
+
+@black: #000;
+@lightRed:   #fdd;
+@lightGreen: #33FF7E;
+@blue: #337AFF;
+@white: #FFFFFF;
+@lightPurple: #B45FC9;
+@darkPurple: #26055C;
+
+@defaultShapesWidth: 200px;
+@defaultRadius: 30px;
+ 
+/* OPERATIONS & COLOR FUNCTIONS */
+@darkBlue: @blue - #555;
+@lightBlue:  @blue + #111;
+
+@defaultHoverColor: darken(@lightPurple, 40%);
+@defaultThemeColor: @lightPurple;
+@defaultListColor: @black;
+@defaultOpacity: .7;
+ 
+@borderSize:  @defaultShapesWidth * 0.02;
+@borderColor: darken(desaturate(@defaultThemeColor, 70%), 20%); 
+
+.rad () {
+    background-color:@defaultListColor;
+    opacity: @defaultOpacity;
+    color: white;
+    .transition(.5s);
+
+    &:hover {
+        background-color: @defaultHoverColor;
+        cursor: pointer;
+    }
+}
