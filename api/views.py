@@ -12,84 +12,95 @@ from rest_framework.response import Response
 
 class GameList(generics.ListCreateAPIView):
     """List all addresses or create a new Game"""
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = ()
+    authentication_classes = ()
     model = Game
     serializer_class = GameSerializer
 
 
 class GameDetail(generics.RetrieveUpdateDestroyAPIView):
     """Retrieve, update or delete an Game."""
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = ()
+    authentication_classes = ()
     model = Game
     serializer_class = GameSerializer
 
 
 class GunList(generics.ListCreateAPIView):
     """List all addresses or create a new Gun"""
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = ()
+    authentication_classes = ()
     model = Gun
     serializer_class = GunSerializer
 
 
 class GunDetail(generics.RetrieveUpdateDestroyAPIView):
     """Retrieve, update or delete an Gun."""
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = ()
+    authentication_classes = ()
     model = Gun
     serializer_class = GunSerializer
 
 
 class PlayerList(generics.ListCreateAPIView):
     """List all addresses or create a new Player"""
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = ()
+    authentication_classes = ()
     model = Player
     serializer_class = PlayerSerializer
 
 
 class PlayerDetail(generics.RetrieveUpdateDestroyAPIView):
     """Retrieve, update or delete an Player."""
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = ()
+    authentication_classes = ()
     model = Player
     serializer_class = PlayerSerializer
 
 
 class PlayerInstanceList(generics.ListCreateAPIView):
     """List all addresses or create a new PlayerInstance"""
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = ()
     model = PlayerInstance
     serializer_class = PlayerInstanceSerializer
 
 
 class PlayerInstanceDetail(generics.RetrieveUpdateDestroyAPIView):
     """Retrieve, update or delete an PlayerInstance."""
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = ()
+    authentication_classes = ()
     model = PlayerInstance
     serializer_class = PlayerInstanceSerializer
 
 
 class ShotList(generics.ListCreateAPIView):
     """List all addresses or create a new Shot"""
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = ()
+    authentication_classes = ()
     model = Shot
     serializer_class = ShotSerializer
 
 
 class ShotDetail(generics.RetrieveUpdateDestroyAPIView):
     """Retrieve, update or delete an Shot."""
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = ()
+    authentication_classes = ()
     model = Shot
     serializer_class = ShotSerializer
 
 
 class TeamList(generics.ListCreateAPIView):
     """List all addresses or create a new Team"""
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = ()
+    authentication_classes = ()
     model = Team
     serializer_class = TeamSerializer
 
 
 class TeamDetail(generics.RetrieveUpdateDestroyAPIView):
     """Retrieve, update or delete an Team."""
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = ()
+    authentication_classes = ()
     model = Team
     serializer_class = TeamSerializer
 
@@ -209,7 +220,8 @@ def setupPlayersOnly(players, game):
 
 
 class Sync(generics.UpdateAPIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = ()
+    authentication_classes = ()
     model = Game
 
     '''

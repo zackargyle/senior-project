@@ -1,7 +1,7 @@
 'use strict';
 
-//var BASE_URL = "http://localhost:8001/";
-var BASE_URL = "http://lasertag.byu.edu/";
+var BASE_URL = "http://localhost:8001/";
+//var BASE_URL = "http://lasertag.byu.edu:8001/";
 
 var module = angular.module('lasertag', ['lasertag.controllers','lasertag.directives']);
 

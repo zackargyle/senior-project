@@ -44,12 +44,16 @@ module1.controller('homeCtrl', function($scope, $http, $timeout, API) {
     });
 
     API.get("playerinstances").then(function(players) {
-      $scope.players = players;
+      $scope.players = players.sort(function(a, b) {
+        return b.score - a.score;
+      });
     });
 
     API.get("teams").then(function(teams) {
-      $scope.teams = teams;
-    })
+      $scope.teams = teams.sort(function(a, b) {
+        return a.score - b.score;
+      });
+    });
 
     API.get("guns").then(function(guns) {
       $scope.guns = guns;

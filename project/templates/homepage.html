@@ -47,8 +47,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr class="review-list" ng-repeat="player in players|filter:{game.id:reviewGame.id, team:team.id}|orderBy:score">
-                <td>{$ $index $}</td>
+              <tr class="review-list" ng-repeat="player in players|filter:{game.id:reviewGame.id, team:team.id}">
+                <td>{$ $index + 1 $}</td>
                 <td>{$ player.player.username $}</td>
                 <td>{$ player.score $}</td>
                 <td>{$ player.num_shots $}</td>
@@ -58,7 +58,7 @@
         </div>
 
         <div ng-hide="reviewGame.mode == 'TEAMS'">
-          <h2>Mode: {$ modeDisplayByVal(reviewGame.mode) $}</h2>
+          <h2>Mode: {$ modeDisplayByVal(reviewGame.mode) $} ---  State: {$ reviewGame.state $}</h2>
             <table class="new-game-table">
               <thead>
                 <tr>
@@ -69,8 +69,8 @@
                 </tr>
               </thead>
               <tbody>
-                <tr class="review-list" ng-repeat="player in players|filter:{game.id:reviewGame.id}|orderBy:score">
-                  <td>{$ $index  $}</td>
+                <tr class="review-list" ng-repeat="player in players|filter:{game.id:reviewGame.id}">
+                  <td>{$ $index + 1 $}</td>
                   <td>{$ player.player.username  $}</td>
                   <td>{$ player.score  $}</td>
                   <td>{$ player.num_shots  $}</td>
