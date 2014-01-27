@@ -2,10 +2,10 @@ var module1 = angular.module('lasertag.controllers', []);
 
 module1.controller('homeCtrl', function($scope, $http, $timeout, API) {
   $scope.ready = false;
+  $scope.show = "review";
 
   // Setup basic game object
   function resetGame() {
-    $scope.show = "review";
     $scope.game = {
       mode: null,
       teams: [],
@@ -39,25 +39,13 @@ module1.controller('homeCtrl', function($scope, $http, $timeout, API) {
 
   // Long polling for near-real-time data
   function sync() {
-    API.get("games").then(function(games) {
-      $scope.games = games;
-    });
-
-    API.get("playerinstances").then(function(players) {
-      $scope.players = players.sort(function(a, b) {
-        return b.score - a.score;
-      });
-    });
-
-    API.get("teams").then(function(teams) {
-      $scope.teams = teams.sort(function(a, b) {
-        return a.score - b.score;
-      });
+    API.get("games").then(function(data) {
+      $scope.games = data.games;
+      $scope.ready = true;
     });
 
     API.get("guns").then(function(guns) {
       $scope.guns = guns;
-      $scope.ready = true;
     });
 
     $timeout(sync, 5000);

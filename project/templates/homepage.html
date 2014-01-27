@@ -14,6 +14,7 @@
   <div id="loadingText" ng-hide="ready">Loading</div>
 
   <div style="text-align:center" ng-show="ready">
+    <div id="logo">Laser Warfare</div>
 
     <div id="menu">
       <img src="assets/img/join.png" ng-click="show = 'join'" ng-class="{spinner:show=='join'}">
@@ -35,7 +36,7 @@
       </div>
       <div id="review-data" ng-show="reviewGame != null">
 
-        <div ng-show="reviewGame.mode == 'TEAMS'" ng-repeat="team in teams|filter:{team.game:reviewGame.id}">
+        <div ng-show="reviewGame.mode == 'TEAMS'" ng-repeat="team in reviewGame.teams">
           <h2>Name : {$ team.name $} - Score : {$ team.score $}</h2>
           <table class="new-game-table">
             <thead>
@@ -47,7 +48,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr class="review-list" ng-repeat="player in players|filter:{game.id:reviewGame.id, team:team.id}">
+              <tr class="review-list" ng-repeat="player in reviewGame.players|filter:{team:team.id}">
                 <td>{$ $index + 1 $}</td>
                 <td>{$ player.player.username $}</td>
                 <td>{$ player.score $}</td>
@@ -69,9 +70,9 @@
                 </tr>
               </thead>
               <tbody>
-                <tr class="review-list" ng-repeat="player in players|filter:{game.id:reviewGame.id}">
+                <tr class="review-list" ng-repeat="player in reviewGame.players">
                   <td>{$ $index + 1 $}</td>
-                  <td>{$ player.player.username  $}</td>
+                  <td>{$ player.username  $}</td>
                   <td>{$ player.score  $}</td>
                   <td>{$ player.num_shots  $}</td>
                 </tr>

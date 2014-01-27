@@ -5,111 +5,125 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseBadRequest
 
 from rest_framework import generics
-from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+class PlayerStats(APIView):
+    
+    def get(self, request, username):
+        player_ = {'instances': [], 'score_total': 0, 'high_score': 0, 'num_shots': 0}
+        try:
+            player = Player.objects.get(username=username)
+            instances = PlayerInstance.objects.filter(player=player)
 
-class GameList(generics.ListCreateAPIView):
-    """List all addresses or create a new Game"""
-    permission_classes = ()
-    authentication_classes = ()
-    model = Game
-    serializer_class = GameSerializer
+            for instance in instances:
+                team_ = None
 
+                if instance.team is not None:
+                    team_ = instance.team.id
 
-class GameDetail(generics.RetrieveUpdateDestroyAPIView):
-    """Retrieve, update or delete an Game."""
-    permission_classes = ()
-    authentication_classes = ()
-    model = Game
-    serializer_class = GameSerializer
+                instance_ = {
+                    'game': instance.game.id, 
+                    'team': team_, 
+                    'gun': instance.gun.id, 
+                    'num_shots': instance.num_shots, 
+                    'score': instance.score
+                }
 
+                player_['instances'].append(instance_)
+                player_['score_total'] += instance.score
+                player_['num_shots'] += instance.num_shots
 
-class GunList(generics.ListCreateAPIView):
-    """List all addresses or create a new Gun"""
-    permission_classes = ()
-    authentication_classes = ()
-    model = Gun
-    serializer_class = GunSerializer
+                if instance.score > player_['high_score']:
+                    player_['high_score'] = instance.score
 
+            return Response(player_)
+        except ObjectDoesNotExist:
+            return Response("No player with that username")
 
-class GunDetail(generics.RetrieveUpdateDestroyAPIView):
-    """Retrieve, update or delete an Gun."""
-    permission_classes = ()
-    authentication_classes = ()
-    model = Gun
-    serializer_class = GunSerializer
+class GunList(APIView):
+    ''' Return a list of guns not currently in use '''
 
+    def get(self, request):
+        guns = Gun.objects.all()
+        games = Game.objects.filter(state='PLAYING')
 
-class PlayerList(generics.ListCreateAPIView):
-    """List all addresses or create a new Player"""
-    permission_classes = ()
-    authentication_classes = ()
-    model = Player
-    serializer_class = PlayerSerializer
+        for game in games:
+            players = PlayerInstance.objects.filter(game=game)
 
+            for player in players:
+                guns = guns.exclude(id=player.gun.id)
 
-class PlayerDetail(generics.RetrieveUpdateDestroyAPIView):
-    """Retrieve, update or delete an Player."""
-    permission_classes = ()
-    authentication_classes = ()
-    model = Player
-    serializer_class = PlayerSerializer
+        guns_ = []
+        for gun in guns:
+            guns_.append({'id': gun.id, 'frequency': gun.frequency})
 
-
-class PlayerInstanceList(generics.ListCreateAPIView):
-    """List all addresses or create a new PlayerInstance"""
-    permission_classes = ()
-    model = PlayerInstance
-    serializer_class = PlayerInstanceSerializer
+        return Response(guns_)
 
 
-class PlayerInstanceDetail(generics.RetrieveUpdateDestroyAPIView):
-    """Retrieve, update or delete an PlayerInstance."""
-    permission_classes = ()
-    authentication_classes = ()
-    model = PlayerInstance
-    serializer_class = PlayerInstanceSerializer
+def getGameData(game):
+    game_ = { 
+        'mode': game.mode, 
+        'teams': [], 
+        'players': [],
+        'time_limit': game.time_limit,
+        'score_limit': game.score_limit,
+        'time_played': game.time_played
+    }
+
+    teams, players = None, None
+
+    if game.mode == "TEAMS":
+
+        teams = Team.objects.filter(game=game)
+
+        for team in teams:
+            game_['teams'].append(team.name)
+
+    players = PlayerInstance.objects.filter(game=game)
+
+    for player in players:
+        team = None
+        if player.team is not None:
+            team = player.team.name
+        game_['players'].append({
+            'username': player.player.username,
+            'gun': player.gun.id,
+            'team': team,
+            'num_shots': player.num_shots,
+             'score': player.score
+        })
+
+    return game_
 
 
-class ShotList(generics.ListCreateAPIView):
-    """List all addresses or create a new Shot"""
-    permission_classes = ()
-    authentication_classes = ()
-    model = Shot
-    serializer_class = ShotSerializer
+class GameDetail(APIView):
+    ''' Get data for a game, its teams, and its players '''
+
+    def get(self, request, pk):
+        try:
+            game = Game.objects.get(id=pk)
+            return Response(getGameData(game))
+
+        except ObjectDoesNotExist:
+            return Response("No game with id: " + pk + " exists.")
 
 
-class ShotDetail(generics.RetrieveUpdateDestroyAPIView):
-    """Retrieve, update or delete an Shot."""
-    permission_classes = ()
-    authentication_classes = ()
-    model = Shot
-    serializer_class = ShotSerializer
+class GameList(APIView):
+    ''' Get data for all games, its teams, and its players '''
 
+    def get(self, request):
+        games_ = []
 
-class TeamList(generics.ListCreateAPIView):
-    """List all addresses or create a new Team"""
-    permission_classes = ()
-    authentication_classes = ()
-    model = Team
-    serializer_class = TeamSerializer
+        games = Game.objects.all()
 
+        for game in games:
+            games_.append(getGameData(game))
 
-class TeamDetail(generics.RetrieveUpdateDestroyAPIView):
-    """Retrieve, update or delete an Team."""
-    permission_classes = ()
-    authentication_classes = ()
-    model = Team
-    serializer_class = TeamSerializer
+        return Response({'games': games_})
 
 
 class GameJoin(generics.UpdateAPIView):
-    permission_classes = ()
-    authentication_classes = ()
-    model = Game
-
     '''
         lasertag.byu.edu/join/<game_id>
         {
@@ -149,9 +163,6 @@ class GameJoin(generics.UpdateAPIView):
 
 
 class GameStart(APIView):
-    permission_classes = ()
-    authentication_classes = ()
-
     '''
         lasertag.byu.edu/start
         {
@@ -220,10 +231,6 @@ def setupPlayersOnly(players, game):
 
 
 class Sync(generics.UpdateAPIView):
-    permission_classes = ()
-    authentication_classes = ()
-    model = Game
-
     '''
         lasertag.byu.edu/sync/<game_id>
         {

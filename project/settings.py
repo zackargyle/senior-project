@@ -3,10 +3,7 @@ PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
 # Django settings for project.
 
 REST_FRAMEWORK = {
-   'DEFAULT_AUTHENTICATION_CLASSES': (
-       'rest_framework.authentication.TokenAuthentication',
-       'rest_framework.authentication.SessionAuthentication'
-   )
+   'DEFAULT_AUTHENTICATION_CLASSES': ()
 }
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
