@@ -2,19 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+
   <title>Laser Warfare</title>
   <link rel="stylesheet" href="../assets/less/laser-warfare/base.css"/>
   <script src="../assets/lib/angular/angular.min.js"></script>
   <script src="../assets/js/controllers.js"></script>
   <script src="../assets/js/app.js"></script>
+  <!--Adobe Edge Runtime-->
+  <script type="text/javascript" charset="utf-8" src="../assets/js/dude.js"></script>
+  <style>
+      .edgeLoad-EDGE-2633143 { visibility:hidden; }
+  </style>
+  <!--Adobe Edge Runtime End-->
+
 </head>
 <body ng-app="lasertag" ng-controller="homeCtrl">
+
 
   <img src="assets/img/loading.png" class="loading" ng-hide="ready">
   <div id="loadingText" ng-hide="ready">Loading</div>
 
   <div style="text-align:center" ng-show="ready">
-    <div id="logo">Laser Warfare</div>
+    <img src="assets/img/logo.png">
 
     <div id="menu">
       <img src="assets/img/join.png" ng-click="show = 'join'" ng-class="{spinner:show=='join'}">
@@ -99,27 +111,27 @@
         <div class="half">
           <h2> Game Mode </h2>
           <div>
-            <select id="newGameMode" ng-model="game.mode" ng-options="mode.value as mode.display for mode in modes"></select>
+            <select id="newGameMode" ng-model="newGame.mode" ng-options="mode.value as mode.display for mode in modes"></select>
           </div>
 
-          <form id="newGameTeams" ng-show="game.mode == 'TEAMS'">
+          <form id="newGameTeams" ng-show="newGame.mode == 'TEAMS'">
             <h2>Add Team</h2>
             <input type="text" ng-model="teamName">
             <button id="addTeam" ng-click="addTeam()">+</button>
           </form>
 
-          <form id="newGamePlayers" ng-show="game.mode">
+          <form id="newGamePlayers" ng-show="newGame.mode">
             <h2>Add Player</h2>
             <input type="text" ng-model="player.username">
             <button id="addPlayer" ng-click="addPlayer()">+</button>
           </form>
 
-          <div class="sp-button" ng-click="startGame()" ng-show="game.mode && game.players.length">Start Game!</div>
+          <div class="sp-button" ng-click="startGame()" ng-show="newGame.mode && newGame.players.length">Start Game!</div>
 
         </div>
 
         <div class="half">
-          <div ng-show="game.teams.length">
+          <div ng-show="newGame.teams.length">
             <table class="new-game-table">
               <thead>
                 <tr>
@@ -127,27 +139,27 @@
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="team in game.teams">
+                <tr ng-repeat="team in newGame.teams">
                   <td>{$ team  $}</td>
                 </tr>
               </tbody>
             </table>
           </div>
 
-          <div ng-show="game.players.length">
+          <div ng-show="newGame.players.length">
             <table class="new-game-table">
               <thead>
                 <tr>
                   <th>Username</th>
-                  <th ng-show="game.mode =='TEAMS'">Team</th>
+                  <th ng-show="newGame.mode =='TEAMS'">Team</th>
                   <th>Gun</th>
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="player in game.players|orderBy:team">
+                <tr ng-repeat="player in newGame.players|orderBy:team">
                   <td>{$ player.username  $}</td>
-                  <td ng-show="game.mode =='TEAMS'">
-                    <select ng-model="player.team" ng-options="team for team in game.teams"></select>
+                  <td ng-show="newGame.mode =='TEAMS'">
+                    <select ng-model="player.team" ng-options="team for team in newGame.teams"></select>
                   </td>
                   <td>
                     <select ng-model="player.gun" ng-options="gun.id as gun.id for gun in guns"></select>
@@ -162,6 +174,8 @@
     </div>
 
   </div>
+
+  <div id="Stage" class="EDGE-2633143"></div>
 
   </body>
 </html>

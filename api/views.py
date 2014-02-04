@@ -7,9 +7,9 @@ from django.http import HttpResponseBadRequest
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.authtoken.views import ObtainAuthToken
 
 class PlayerStats(APIView):
-    
     def get(self, request, username):
         player_ = {'instances': [], 'score_total': 0, 'high_score': 0, 'num_shots': 0}
         try:
@@ -43,7 +43,6 @@ class PlayerStats(APIView):
 
 class GunList(APIView):
     ''' Return a list of guns not currently in use '''
-
     def get(self, request):
         guns = Gun.objects.all()
         games = Game.objects.filter(state='PLAYING')
@@ -64,6 +63,7 @@ class GunList(APIView):
 def getGameData(game):
     game_ = { 
         'mode': game.mode, 
+        'state': game.state,
         'teams': [], 
         'players': [],
         'time_limit': game.time_limit,
@@ -132,7 +132,6 @@ class GameJoin(generics.UpdateAPIView):
             "gun": 4
         }
     '''
-
     def put(self, request, pk, format=None):
         data = request.DATA
         game = Game.objects.get(id=pk)
@@ -182,7 +181,6 @@ class GameStart(APIView):
             "time_limit": null
         }
     '''
-
     def post(self, request):
         data = request.DATA
         players = data["players"]
@@ -230,7 +228,7 @@ def setupPlayersOnly(players, game):
         instance.save()
 
 
-class Sync(generics.UpdateAPIView):
+class Sync(APIView):
     '''
         lasertag.byu.edu/sync/<game_id>
         {
@@ -239,7 +237,6 @@ class Sync(generics.UpdateAPIView):
             "hits_taken": [4,4,4]
         }
     '''
-
     def put(self, request, pk, format=None):
         game = Game.objects.get(id=pk)
         data = request.DATA
