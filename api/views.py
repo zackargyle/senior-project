@@ -7,7 +7,6 @@ from django.http import HttpResponseBadRequest
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.authtoken.views import ObtainAuthToken
 
 class PlayerStats(APIView):
     def get(self, request, username):
@@ -22,12 +21,20 @@ class PlayerStats(APIView):
                 if instance.team is not None:
                     team_ = instance.team.id
 
+                frenemies = PlayerInstance.objects.filter(game=instance.game).order_by('-score')
+
+                rank = None
+                for index, dude in enumerate(frenemies):
+                    if dude == instance:
+                        rank = index
+
                 instance_ = {
-                    'game': instance.game.id, 
+                    'time': instance.game.time_played, 
                     'team': team_, 
                     'gun': instance.gun.id, 
                     'num_shots': instance.num_shots, 
-                    'score': instance.score
+                    'score': instance.score,
+                    'rank': rank + 1
                 }
 
                 player_['instances'].append(instance_)
@@ -158,7 +165,7 @@ class GameJoin(generics.UpdateAPIView):
         instance = PlayerInstance(gun=gun, player=player, team=team, game=game, num_shots=0, score=0)
         instance.save()
 
-        return Response({'game': game.id})
+        return Response({'game': game.id, 'player': instance.id})
 
 
 class GameStart(APIView):
@@ -178,7 +185,8 @@ class GameStart(APIView):
             ],
             "teams": ["googlers", "bingers"],
             "score_limit": null,
-            "time_limit": null
+            "time_limit": null,
+            "username": "mac the knife"
         }
     '''
     def post(self, request):
@@ -194,7 +202,9 @@ class GameStart(APIView):
         else:
             setupPlayersOnly(players, game)
 
-        return Response({'game': game.id})
+        instance = PlayerInstance.objects.get(game=game,username=data["username"])
+
+        return Response({'game': game.id, 'player': instance.id})
 
 def setupTeamsAndPlayers(teams, players, game):
     for team_name in teams:

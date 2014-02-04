@@ -54,7 +54,7 @@ module1.controller('homeCtrl', function($scope, $http, $timeout, API) {
       $scope.guns = guns;
     });
 
-    // $timeout(sync, 3000);
+    $timeout(sync, 3000);
   };
 
   sync();
@@ -66,30 +66,13 @@ module1.controller('homeCtrl', function($scope, $http, $timeout, API) {
     }
   };
 
-  // Add team name to newGame data
-  $scope.addTeam = function() {
-    $scope.newGame.teams.push(angular.copy($scope.teamName));
-    $scope.teamName = "";
-  };
-
-  $scope.addPlayer = function() {
-    if ($scope.guns.length ==  $scope.newGame.players.length) {
-      alert("Not enough guns for that many players.");
-    } else {
-      $scope.newGame.players.push(angular.copy($scope.player));
-      $scope.player.username = "";
-    }
-    console.log($scope.newGame);
-  };
-
-  // Post then reset game data
-  $scope.startGame = function() {
-    $http.post(BASE_URL + "start",  $scope.newGame)
-      .success(function(response) {
-        $scope.show = "join";
+  $scope.stats = function(player) {
+    API.get("stats/" + player.username).then(function(data) {
+      data.username = player.username;
+      $scope.playerStats = data;
+      $scope.show = "stats";
     });
-    resetGame();
-  };
+  }
 
 });
 

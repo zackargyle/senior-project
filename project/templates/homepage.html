@@ -11,12 +11,6 @@
   <script src="../assets/lib/angular/angular.min.js"></script>
   <script src="../assets/js/controllers.js"></script>
   <script src="../assets/js/app.js"></script>
-  <!--Adobe Edge Runtime-->
-  <script type="text/javascript" charset="utf-8" src="../assets/js/dude.js"></script>
-  <style>
-      .edgeLoad-EDGE-2633143 { visibility:hidden; }
-  </style>
-  <!--Adobe Edge Runtime End-->
 
 </head>
 <body ng-app="lasertag" ng-controller="homeCtrl">
@@ -28,23 +22,14 @@
   <div style="text-align:center" ng-show="ready">
     <img src="assets/img/logo.png">
 
-    <div id="menu">
-      <img src="assets/img/join.png" ng-click="show = 'join'" ng-class="{spinner:show=='join'}">
-      <img src="assets/img/new.png" ng-click="show = 'new'" ng-class="{spinner:show=='new'}">
+    <!-- <div id="menu">
       <img src="assets/img/settings.png" ng-click="show = 'review'" ng-class="{spinner:show=='review'}">
-    </div>
-
-    <div ng-show="show == 'join'">
-      <header>Join a Game</header>
-      <div class="review-list" ng-repeat="game in games|filter:{state:'PLAYING'}" ng-click="joinGame(game)">
-        Started: &nbsp {$ game.time_played|date:'h:mma'  $},&nbsp Mode: &nbsp {$ game.mode  $}
-      </div>
-    </div>
+    </div> -->
 
     <div ng-show="show == 'review'">
     	<header>Review a Game</header>
     	<div class="review-list" ng-show="reviewGame == null" ng-repeat="game in games|orderBy:'-time_played'|limitTo:10" ng-click="review(game)">
-        Time Played: &nbsp {$ game.time_played|date:'MM/dd/yyyy @ h:mma'  $},&nbsp Mode: &nbsp {$ game.mode  $}
+        Time Played: {$ game.time_played|date:'MM/dd/yyyy @ h:mma'  $}, Mode: {$ modeDisplayByVal(game.mode)  $}
       </div>
       <div id="review-data" ng-show="reviewGame != null">
 
@@ -82,7 +67,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr class="review-list" ng-repeat="player in reviewGame.players">
+                <tr class="review-list" ng-repeat="player in reviewGame.players" ng-click="stats(player)">
                   <td>{$ $index + 1 $}</td>
                   <td>{$ player.username  $}</td>
                   <td>{$ player.score  $}</td>
@@ -96,81 +81,31 @@
       </div>
 	  </div>
 
-    <div ng-show="show == 'new'">
-      <header>Create a Game</header>
-      <div id="newGameWrapper">
-
-        <div class="half">
-          <header> Enter Game Information </header>
-        </div>
-
-        <div class="half">
-          <header>Player Information </header>
-        </div>
-
-        <div class="half">
-          <h2> Game Mode </h2>
-          <div>
-            <select id="newGameMode" ng-model="newGame.mode" ng-options="mode.value as mode.display for mode in modes"></select>
-          </div>
-
-          <form id="newGameTeams" ng-show="newGame.mode == 'TEAMS'">
-            <h2>Add Team</h2>
-            <input type="text" ng-model="teamName">
-            <button id="addTeam" ng-click="addTeam()">+</button>
-          </form>
-
-          <form id="newGamePlayers" ng-show="newGame.mode">
-            <h2>Add Player</h2>
-            <input type="text" ng-model="player.username">
-            <button id="addPlayer" ng-click="addPlayer()">+</button>
-          </form>
-
-          <div class="sp-button" ng-click="startGame()" ng-show="newGame.mode && newGame.players.length">Start Game!</div>
-
-        </div>
-
-        <div class="half">
-          <div ng-show="newGame.teams.length">
-            <table class="new-game-table">
-              <thead>
-                <tr>
-                  <th>Team Name</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr ng-repeat="team in newGame.teams">
-                  <td>{$ team  $}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div ng-show="newGame.players.length">
-            <table class="new-game-table">
-              <thead>
-                <tr>
-                  <th>Username</th>
-                  <th ng-show="newGame.mode =='TEAMS'">Team</th>
-                  <th>Gun</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr ng-repeat="player in newGame.players|orderBy:team">
-                  <td>{$ player.username  $}</td>
-                  <td ng-show="newGame.mode =='TEAMS'">
-                    <select ng-model="player.team" ng-options="team for team in newGame.teams"></select>
-                  </td>
-                  <td>
-                    <select ng-model="player.gun" ng-options="gun.id as gun.id for gun in guns"></select>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-        </div>
-      </div>
+    <div ng-show="show == 'stats'">
+      <h2>Games played by {$ playerStats.username $}</h2>
+      <table class="new-game-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Time Played</th>
+            <th>Score</th>
+            <th>Shots Fired</th>
+            <th>Gun Used</th>
+            <th>Team</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="review-list" ng-repeat="instance in playerStats.instances">
+            <td>{$ instance.rank $}</td>
+            <td>{$ instance.time|date:'MM/dd/yyyy @ h:mma' $}</td>
+            <td>{$ instance.score $}</td>
+            <td>{$ instance.num_shots  $}</td>
+            <td>{$ instance.gun  $}</td>
+            <td>{$ instance.team || 'None'  $}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="sp-button" ng-click="show = 'review'">Back</div>
     </div>
 
   </div>
