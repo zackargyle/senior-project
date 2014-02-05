@@ -79,6 +79,7 @@ class GunList(APIView):
 
 def getGameData(game):
     game_ = { 
+        'id': game.id,
         'mode': game.mode, 
         'state': game.state,
         'teams': [], 
