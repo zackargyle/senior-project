@@ -171,7 +171,9 @@ class GameJoin(generics.UpdateAPIView):
         instance = PlayerInstance(gun=gun, player=player, team=team, game=game, num_shots=0, score=0)
         instance.save()
 
-        return Response({'game': game.id, 'player': instance.id})
+        team = instance.team.id if instance.team else None
+
+        return Response({'game': game.id, 'mode': game.mode, 'player': instance.id, 'team': team})
 
 
 class GameStart(APIView):
@@ -211,7 +213,9 @@ class GameStart(APIView):
         player = Player.objects.get(username=data["username"])
         instance = PlayerInstance.objects.get(game=game,player=player)
 
-        return Response({'game': game.id, 'player': instance.id})
+        team = instance.team.id if instance.team else None
+
+        return Response({'game': game.id, 'mode': game.mode, 'player': instance.id, 'team': team})
 
 def setupTeamsAndPlayers(teams, players, game):
     for team_name in teams:
