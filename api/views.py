@@ -8,6 +8,12 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+
+class ShotList(generics.ListAPIView):
+    model = Shot
+    serializer_class = ShotSerializer
+
+
 class PlayerStats(APIView):
     def get(self, request, username):
         player_ = {'instances': [], 'score_total': 0, 'high_score': 0, 'num_shots': 0}
