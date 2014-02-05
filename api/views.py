@@ -8,6 +8,10 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+class TeamList(generics.ListAPIView):
+    model = Team
+    serializer_class = TeamSerializer
+
 
 class ShotList(generics.ListAPIView):
     model = Shot

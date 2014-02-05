@@ -10,6 +10,7 @@ urlpatterns = patterns('api.views',
                        url(r'^stats/(?P<username>[a-zA-Z0-9]+)$', views.PlayerStats.as_view(), name='player-stats'),
                        url(r'^sync/(?P<pk>[0-9]+)$', views.Sync.as_view(), name='game-sync'),
                        url(r'^shots$', views.ShotList.as_view(), name='shot-list'),
+                       url(r'^teams$', views.TeamList.as_view(), name='team-list'),
                        url(r'^start$', views.GameStart.as_view(), name='game-start'))
 
 urlpatterns += patterns('',
