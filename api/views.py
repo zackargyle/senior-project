@@ -208,7 +208,8 @@ class GameStart(APIView):
         else:
             setupPlayersOnly(players, game)
 
-        instance = PlayerInstance.objects.get(game=game,username=data["username"])
+        player = Player.objects.get(username=data["username"])
+        instance = PlayerInstance.objects.get(game=game,player=player)
 
         return Response({'game': game.id, 'player': instance.id})
 
