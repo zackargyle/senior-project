@@ -274,12 +274,12 @@ class Sync(APIView):
 
             updateShots(game, data["hits_taken"], player_instance)
 
-            return getUpdates(game, player_instance)
+            return getUpdates(game, player_instance, data["hits_taken"])
         except ObjectDoesNotExist:
             return HttpResponseBadRequest()
 
 
-def getUpdates(game, player):
+def getUpdates(game, player, hits_taken):
     teams = Team.objects.filter(game=game)
     team_scores = []
 
@@ -296,15 +296,12 @@ def getUpdates(game, player):
         team.score = team_score
         team.save()
 
-    #How many times you've been shot
-    shots = Shot.objects.filter(target=player)
-
     team = player.team
     team_name = ""
     if team is not None:
         team_name = team.name
 
-    return Response({'team_scores': team_scores, 'team': team_name, 'score': player.score if player.score > 0 else 0, 'game_state': game.state, 'times_hit': len(shots)})
+    return Response({'team_scores': team_scores, 'team': team_name, 'score': player.score if player.score > 0 else 0, 'game_state': game.state, 'times_hit': len(hits_taken)})
 
 
 def getPlayerByFrequency(game, frequency):
