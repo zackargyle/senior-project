@@ -40,12 +40,23 @@ module1.controller('homeCtrl', function($scope, $http, $timeout, API) {
     }
   }
 
+  function updateReviewGame() {
+    if ($scope.reviewGame) {
+      angular.forEach($scope.games, function(game) {
+        if ($scope.reviewGame.id === game.id) {
+          $scope.reviewGame = game;
+        }
+      });
+    }
+  }
+
   // Long polling for near-real-time data
   function sync() {
     // Get up-to-moment game data
     API.get("games").then(function(data) {
       $scope.games = data.games;
       $scope.ready = true;
+      updateReviewGame();
     });
 
     // Get list of available guns
@@ -53,7 +64,7 @@ module1.controller('homeCtrl', function($scope, $http, $timeout, API) {
       $scope.guns = guns;
     });
 
-    $timeout(sync, 2000);
+    $timeout(sync, 3000);
   };
 
   sync();
