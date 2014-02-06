@@ -26,17 +26,17 @@
       <img src="assets/img/settings.png" ng-click="show = 'review'" ng-class="{spinner:show=='review'}">
     </div> -->
 
-    <div ng-show="show == 'review'">
-    	<header>Review a Game</header>
+    <div ng-show="show == 'review'" style="margin-top:2%">
+    	<header ng-show="reviewGame == null">Review a Game</header>
     	<div class="review-list" ng-show="reviewGame == null" ng-repeat="game in games|orderBy:'-time_played'|limitTo:10" ng-click="review(game)">
         Time Played: {$ game.time_played|date:'MM/dd/yyyy @ h:mma'  $}, Mode: {$ modeDisplayByVal(game.mode)  $}
       </div>
       <div id="review-data" ng-show="reviewGame != null">
 
         <div ng-show="reviewGame.mode == 'TEAMS'" ng-repeat="team in reviewGame.teams">
-          <h2>Name : {$ team.name $} - Score : {$ team.score $}</h2>
           <table class="new-game-table">
             <thead>
+              <div class="teams-header">Name : {$ team.name $} --- Score : {$ team.score $}</div>
               <tr>
                 <th>Place</th>
                 <th>Username</th>
@@ -45,9 +45,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr class="review-list" ng-repeat="player in reviewGame.players|filter:{team:team.id}">
+              <tr class="review-list" ng-repeat="player in reviewGame.players|filter:{team:team.name}">
                 <td>{$ $index + 1 $}</td>
-                <td>{$ player.player.username $}</td>
+                <td>{$ player.username $}</td>
                 <td>{$ player.score $}</td>
                 <td>{$ player.num_shots $}</td>
               </tr>

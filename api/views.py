@@ -96,7 +96,7 @@ def getGameData(game):
         teams = Team.objects.filter(game=game)
 
         for team in teams:
-            game_['teams'].append(team.name)
+            game_['teams'].append({"name": team.name, "score": team.score})
 
     players = PlayerInstance.objects.filter(game=game)
 

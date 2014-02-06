@@ -12,7 +12,6 @@ module1.controller('homeCtrl', function($scope, $http, $timeout, API) {
   };
 
   var val = [1,2,3,4].concat([1,2,3,4]);
-  console.log(val);
 
   // Setup game mode choices
   $scope.modes = [
@@ -54,7 +53,7 @@ module1.controller('homeCtrl', function($scope, $http, $timeout, API) {
       $scope.guns = guns;
     });
 
-    $timeout(sync, 3000);
+    $timeout(sync, 2000);
   };
 
   sync();

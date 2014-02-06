@@ -61,7 +61,7 @@ SECRET_KEY = '8fdsaho3218hjklsa0d8h33'
 DEBUG_APPS = ()
 
 CORS_ORIGIN_WHITELIST = (
-   'lasertag.byu.edu',
+   'lasertag.byu.edu:8001',
    'localhost:8000',
    'localhost/',
 )
