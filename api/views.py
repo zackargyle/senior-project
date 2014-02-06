@@ -109,7 +109,7 @@ def getGameData(game):
             'gun': player.gun.id,
             'team': team,
             'num_shots': player.num_shots,
-             'score': player.score
+             'score': player.score if player.score > 0 else 0
         })
 
     return game_
@@ -266,7 +266,6 @@ class Sync(APIView):
     def put(self, request, pk, format=None):
         game = Game.objects.get(id=pk)
         data = request.DATA
-        print data
 
         try:
             player_instance = PlayerInstance.objects.get(game=game, gun__id=data["gun"])
@@ -290,9 +289,12 @@ def getUpdates(game, player):
 
         for member in team_members:
             team_score += member.score
-
+        
         score = {'name': team.name, 'score': team_score if (team_score > 0) else 0}
         team_scores.append(score)
+
+        team.score = team_score
+        team.save()
 
     team = player.team
     team_name = ""
@@ -327,6 +329,4 @@ def updateShots(game, hits, player_hit):
         player_shooting.save()
 
         player_hit.score -= 10
-        if player_hit.score <= 0:
-            player_hit.score = 0
         player_hit.save()
