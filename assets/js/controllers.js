@@ -53,8 +53,8 @@ module1.controller('homeCtrl', function($scope, $http, $timeout, API) {
   // Long polling for near-real-time data
   function sync() {
     // Get up-to-moment game data
-    API.get("games").then(function(data) {
-      $scope.games = data.games;
+    API.get("games").then(function(response) {
+      $scope.games = response.data;
       $scope.ready = true;
       updateReviewGame();
     });
@@ -64,7 +64,7 @@ module1.controller('homeCtrl', function($scope, $http, $timeout, API) {
       $scope.guns = guns;
     });
 
-    $timeout(sync, 3000);
+    $timeout(sync, 2000);
   };
 
   sync();
@@ -77,8 +77,9 @@ module1.controller('homeCtrl', function($scope, $http, $timeout, API) {
   };
 
   $scope.stats = function(player) {
-    API.get("stats/" + player.username).then(function(data) {
-      data.username = player.username;
+    API.get("stats/" + player.username).then(function(response) {
+      var data = response.data;
+      console.log(data);
       $scope.playerStats = data;
       $scope.show = "stats";
     });

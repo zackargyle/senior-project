@@ -22,10 +22,6 @@
   <div style="text-align:center" ng-show="ready">
     <img src="assets/img/logo.png">
 
-    <!-- <div id="menu">
-      <img src="assets/img/settings.png" ng-click="show = 'review'" ng-class="{spinner:show=='review'}">
-    </div> -->
-
     <div ng-show="show == 'review'" style="margin-top:2%">
     	<header ng-show="reviewGame == null">Review a Game</header>
     	<div class="review-list" ng-show="reviewGame == null" ng-repeat="game in games|orderBy:'-time_played'|limitTo:10" ng-click="review(game)">
@@ -36,20 +32,18 @@
         <div ng-show="reviewGame.mode == 'TEAMS'" ng-repeat="team in reviewGame.teams">
           <table class="new-game-table">
             <thead>
-              <div class="teams-header">Name : {$ team.name $} --- Score : {$ team.score $}</div>
+              <div class="teams-header">Team : {$ team.name $} --- Score : {$ team.score $}</div>
               <tr>
                 <th>Place</th>
                 <th>Username</th>
                 <th>Score</th>
-                <th>Shots Fired</th>
               </tr>
             </thead>
             <tbody>
-              <tr class="review-list" ng-repeat="player in reviewGame.players|filter:{team:team.name}">
+              <tr class="review-list" ng-repeat="player in reviewGame.players|filter:{team_name:team.name}" ng-click="stats(player)">
                 <td>{$ $index + 1 $}</td>
                 <td>{$ player.username $}</td>
                 <td>{$ player.score $}</td>
-                <td>{$ player.num_shots $}</td>
               </tr>
             </tbody>
           </table>
@@ -63,7 +57,6 @@
                   <th>Place</th>
                   <th>Username</th>
                   <th>Score</th>
-                  <th>Shots Fired</th>
                 </tr>
               </thead>
               <tbody>
@@ -71,7 +64,6 @@
                   <td>{$ $index + 1 $}</td>
                   <td>{$ player.username  $}</td>
                   <td>{$ player.score  $}</td>
-                  <td>{$ player.num_shots  $}</td>
                 </tr>
               </tbody>
             </table>
@@ -86,22 +78,41 @@
       <table class="new-game-table">
         <thead>
           <tr>
+            <th>High Score</th>
+            <th>Score Total</th>
+            <th>Shot Percentage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="review-list border-bottom">
+            <td>{$ playerStats.high_score $}</td>
+            <td>{$ playerStats.score_total $}</td>
+            <td>{$ playerStats.shot_perc $}%</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table class="new-game-table">
+        <thead>
+          <tr>
             <th>Rank</th>
             <th>Time Played</th>
             <th>Score</th>
             <th>Shots Fired</th>
-            <th>Gun Used</th>
+            <th>Hits Landed</th>
+            <th>Hits Taken</th>
             <th>Team</th>
           </tr>
         </thead>
         <tbody>
-          <tr class="review-list" ng-repeat="instance in playerStats.instances">
+          <tr class="review-list" ng-repeat="instance in playerStats.instances|orderBy:'-time_played'">
             <td>{$ instance.rank $}</td>
-            <td>{$ instance.time|date:'MM/dd/yyyy @ h:mma' $}</td>
+            <td>{$ instance.time_played|date:'MM/dd/yyyy @ h:mma' $}</td>
             <td>{$ instance.score $}</td>
             <td>{$ instance.num_shots  $}</td>
-            <td>{$ instance.gun  $}</td>
-            <td>{$ instance.team || 'None'  $}</td>
+            <td>{$ instance.hits_landed  $}</td>
+            <td>{$ instance.hits_taken  $}</td>
+            <td>{$ instance.team_name || 'None' $}</td>
           </tr>
         </tbody>
       </table>

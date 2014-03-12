@@ -35,6 +35,8 @@ class PlayerInstance(models.Model):
     x_coord = models.FloatField(blank=True, null=True)
     y_coord = models.FloatField(blank=True, null=True)
     score = models.IntegerField() #updated in send_updates
+    hits_taken = models.IntegerField(default=0)
+    hits_landed = models.IntegerField(default=0)
 
     def __unicode__(self):
         return u'%s' % self.player

@@ -20,39 +20,46 @@ class ShotList(generics.ListAPIView):
 
 class PlayerStats(APIView):
     def get(self, request, username):
-        player_ = {'instances': [], 'score_total': 0, 'high_score': 0, 'num_shots': 0}
+        player_ = {'username': username, 'instances': [], 'score_total': 0, 'high_score': 0, 'shot_perc': 0}
         try:
             player = Player.objects.get(username=username)
             instances = PlayerInstance.objects.filter(player=player)
+
+            total_hits = 0
+            total_shots = 0
 
             for instance in instances:
                 team_ = None
 
                 if instance.team is not None:
-                    team_ = instance.team.id
+                    team_ = instance.team.name
 
                 frenemies = PlayerInstance.objects.filter(game=instance.game).order_by('-score')
 
                 rank = None
                 for index, dude in enumerate(frenemies):
                     if dude == instance:
-                        rank = index
+                        rank = index + 1
 
                 instance_ = {
-                    'time': instance.game.time_played, 
-                    'team': team_, 
-                    'gun': instance.gun.id, 
-                    'num_shots': instance.num_shots, 
+                    'time_played': instance.game.time_played, 
+                    'team_name': team_,
+                    'num_shots': instance.num_shots,
+                    'hits_landed': instance.hits_landed,
+                    'hits_taken': instance.hits_taken,
                     'score': instance.score,
-                    'rank': rank + 1
+                    'rank': rank
                 }
 
                 player_['instances'].append(instance_)
                 player_['score_total'] += instance.score
-                player_['num_shots'] += instance.num_shots
+                total_hits += instance.hits_landed
+                total_shots += instance.num_shots
 
                 if instance.score > player_['high_score']:
                     player_['high_score'] = instance.score
+
+            player_['shot_perc'] = round(total_hits / float(total_shots),2) * 100
 
             return Response(player_)
         except ObjectDoesNotExist:
@@ -228,7 +235,9 @@ def setupPlayer(player, game):
 
     gun = Gun.objects.get(pk=player["gun_id"])
 
-    team = Team.objects.get(game=game, name=player["team_name"])
+    team = None
+    if game.mode == "TEAMS":
+        team = Team.objects.get(game=game, name=player["team_name"])
 
     instance = PlayerInstance(gun=gun, player=player_, team=team, game=game, num_shots=0, score=0)
     instance.save()
@@ -260,7 +269,7 @@ class Sync(APIView):
             return HttpResponseBadRequest()
 
 
-def getUpdates(game, player):
+def getUpdates(game, player_):
     teams = Team.objects.filter(game=game)
     team_scores = []
 
@@ -269,12 +278,12 @@ def getUpdates(game, player):
         team_scores.append(score)
 
     players = PlayerInstance.objects.filter(game=game)
-    players_scores = []
+    player_scores = []
 
     for player in players:
-        player_scores.append({'username': player.username, 'score': player.score})
+        player_scores.append({'username': player.player.username, 'score': player.score})
 
-    return Response({'team_scores': team_scores,'player_scores': players_scores, 'score': player.score, 'game_state': game.state})
+    return Response({'team_scores': team_scores,'player_scores': player_scores, 'score': player_.score, 'game_state': game.state})
 
 
 def getPlayerByFrequency(game, frequency):
@@ -300,6 +309,7 @@ def updateShots(game, hits, player_hit):
 
         # Increase shooter's score
         player_shooting.score += 50
+        player_shooting.hits_landed += 1;
         player_shooting.save()
 
         if game.mode == "TEAMS":
@@ -308,6 +318,7 @@ def updateShots(game, hits, player_hit):
 
         # Decrease player_hit's score
         player_hit.score -= 25
+        player_hit.hits_taken += 1
         player_hit.save()
 
         if game.mode == "TEAMS":
