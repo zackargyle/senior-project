@@ -1,3 +1,5 @@
+import datetime
+
 from api.models import *
 from api.serializers import *
 
@@ -7,6 +9,26 @@ from django.http import HttpResponseBadRequest
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
+
+START_DELAY = 60 #seconds
+
+def timeLeft(game):
+    time_played = (datetime.datetime.utcnow() - game.time_played.replace(tzinfo=None)).total_seconds()
+    return int(round(game.time_limit + START_DELAY - time_played))
+    
+def scoreLimitReached(game):
+    if game.mode == 'TEAMS':
+        teams = Team.objects.filter(game=game)
+        for team in teams:
+            if team.score >= game.score_limit:
+                return True
+    else:
+        players = PlayerInstance.objects.filter(game=game)
+        for player in players:
+            if player.score >= game.score_limit:
+                return True
+    return False
+
 
 class TeamList(generics.ListAPIView):
     model = Team
@@ -159,6 +181,13 @@ class GameJoin(APIView):
         data = request.DATA
         game = Game.objects.get(id=pk)
 
+        # Past Wait State
+        if game.state == 'NEW':
+            print 
+            if (datetime.datetime.utcnow() - game.time_played.replace(tzinfo=None)).total_seconds() > START_DELAY:
+                game.state = 'PLAYING'
+                game.save()
+
         team = None
         try:
             team = Team.objects.get(id=data["team_id"])
@@ -169,7 +198,7 @@ class GameJoin(APIView):
         try:
             gun = Gun.objects.get(id=data["gun_id"])
         except ObjectDoesNotExist:
-            pass
+            return HttpResponseBadRequest()
 
         player = None
         try:
@@ -183,7 +212,11 @@ class GameJoin(APIView):
 
         team = instance.team.id if instance.team else None
 
-        return Response({'game_id': game.id, 'player_id': instance.id, 'team_id': team})
+        time_left = None
+        if game.time_limit is not None:
+            time_left = timeLeft(game);
+
+        return Response({'game_id': game.id, 'player_id': instance.id, 'team_id': team, 'time_left': time_left})
 
 
 class GameStart(APIView):
@@ -206,19 +239,25 @@ class GameStart(APIView):
         data = request.DATA
         player = data["player"]
         teams = data["teams"]
-        print data
 
-        game = Game(mode=data["mode"], state="PLAYING", time_limit=data["time_limit"], score_limit=data["score_limit"])
+        game = Game(mode=data["mode"], state="NEW", time_limit=data["time_limit"], score_limit=data["score_limit"])
         game.save()
 
-        if data["mode"] == "TEAMS":
-            setupTeams(teams, game)
-
-        instance = setupPlayer(player, game)
+        try:
+            if data["mode"] == "TEAMS":
+                setupTeams(teams, game)
+            instance = setupPlayer(player, game)
+        except ObjectDoesNotExist:
+            game.delete()
+            return HttpResponseBadRequest()
 
         team_id = instance.team.id if instance.team else None
 
-        return Response({'game_id': game.id, 'player_id': instance.id, 'team_id': team_id})
+        time_left = None
+        if game.time_limit is not None:
+            time_left = timeLeft(game);
+
+        return Response({'game_id': game.id, 'player_id': instance.id, 'team_id': team_id, 'time_left': time_left})
 
 def setupTeams(teams, game):
     for team_name in teams:
@@ -257,6 +296,30 @@ class Sync(APIView):
         game = Game.objects.get(id=pk)
         data = request.DATA
 
+        # Past wait state?
+        if game.state == 'NEW':
+            if (datetime.datetime.utcnow() - game.time_played.replace(tzinfo=None)).total_seconds() >= START_DELAY:
+                game.state = 'PLAYING'
+                game.save()
+            else:
+                return Response('Cannot sync. Currently in 60 second wait period.')
+
+        # Game finished?
+        if game.state == 'FINISHED':
+            player_instance = PlayerInstance.objects.get(id=data["player_id"])
+            return getUpdates(game, player_instance)
+        elif game.time_limit and timeLeft(game) <= 0:
+            game.state = 'FINISHED'
+            game.save()
+            player_instance = PlayerInstance.objects.get(id=data["player_id"])
+            return getUpdates(game, player_instance)
+        elif game.score_limit and scoreLimitReached(game):
+            game.state = 'FINISHED'
+            game.save()
+            player_instance = PlayerInstance.objects.get(id=data["player_id"])
+            return getUpdates(game, player_instance)
+
+        # Ok, it is valid. Do stuff
         try:
             player_instance = PlayerInstance.objects.get(id=data["player_id"])
             player_instance.num_shots = data["shots_fired"]
