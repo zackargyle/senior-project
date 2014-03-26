@@ -158,7 +158,13 @@ class GameDetail(APIView):
 
 
 class GameList(APIView):
-    ''' Get data for all games, its teams, and its players '''
+    ''' 
+        Query Parameters
+            - limitTo, startAt
+            - joinable (filters all NEW or PLAYING games)
+            - state (NEW, PLAYING, FINISHED)
+            - mode (FREE, TEAMS)
+    '''
 
     def get(self, request):
         games = Game.objects.all().order_by('-time_played')
@@ -168,18 +174,21 @@ class GameList(APIView):
         start = request.GET.get('startAt')
         state = request.GET.get('state')
         mode  = request.GET.get('mode')
+        joinable = request.GET.get('joinable')
+
+        if joinable is not None:
+            games = games.exclude(state="FINISHED")
+        elif state is not None:
+            games = games.filter(state=state)
+
+        if mode is not None:
+            games = games.filter(mode=mode)
 
         if limit is not None:
             if start is not None:
                 games = games[start:start+limit]
             else:
                 games = games[0:limit]
-        
-        if state is not None:
-            games = games.filter(state=state)
-
-        if mode is not None:
-            games = games.filter(mode=mode)
 
         games_ = []
         for game in games:
@@ -201,9 +210,13 @@ class GameJoin(APIView):
         data = request.DATA
         game = Game.objects.get(id=pk)
 
+        # Cannot join completed games
+        if game.state == "FINISHED":
+            return Response("Cannot join finished games.")
+
         # Past Wait State
         if game.state == 'NEW':
-            if (datetime.datetime.utcnow() - game.time_played.replace(tzinfo=None)).total_seconds() > START_DELAY:
+            if (datetime.datetime.utcnow() - game.time_played.replace(tzinfo=None)).total_seconds() >= START_DELAY:
                 game.state = 'PLAYING'
                 game.save()
 
@@ -386,6 +399,16 @@ def updateShots(game, hits, player_hit):
     for hit in hits:
         player_shooting = getPlayerByFrequency(game, hit)
 
+        # Cannot shoot yourself
+        if player_shooting.id == player_hit.id:
+            return
+
+        # Cannot shoot teammates
+        if game.mode == "TEAMS":
+            if player_shooting.team == player_hit.team:
+                return
+
+        # Create the shot correlation
         shot = Shot(game=game, shooter=player_shooting, target=player_hit)
         shot.save()
 
