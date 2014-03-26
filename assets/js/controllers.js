@@ -1,90 +1,45 @@
 var module1 = angular.module('lasertag.controllers', []);
 
-module1.controller('homeCtrl', function($scope, $http, $timeout, API) {
+module1.controller('homeCtrl', function($rootScope, $scope, $http, Sync) {
   $scope.ready = false;
-  $scope.show = "review";
+  $scope.show = "games"; // games, review, stats
+  $scope.games = [];
 
-  // Setup basic player object
-  $scope.player = {
-    username: "",
-    team: "",
-    gun: null
-  };
-
-  var val = [1,2,3,4].concat([1,2,3,4]);
-
-  // Setup game mode choices
-  $scope.modes = [
-    { display: "Free for all", value: "FREE" },
-    { display: "Teams", value: "TEAMS" },
-    { display: "Juggernaut", value: "JUGGERNAUT" },
-    { display: "Capture the Flag", value: "FLAG" }
-  ]
-
-  // Setup basic game object
-  function resetGame() {
-     $scope.newGame = {
-      mode: null,
-      teams: [],
-      players: [],
-      time_limit: null,
-      score_limit: null
-    };
+  // Grab games
+  function getGames(page) {
+    $http.get("games?limitTo=10&startAt=" + page * 10)
+      .then(function(response) {
+        $scope.games = response.data;
+        if (!$scope.ready) $scope.ready = true;
+      });
   }
-  resetGame();
+  getGames(0);
 
-  // Get mode display text based on value
-  $scope.modeDisplayByVal = function(val) {
-    for (var i = 0; i < $scope.modes.length; i++) {
-      if ($scope.modes[i].value == val) return $scope.modes[i].display;
+  // Listen for Syncing
+  $rootScope.$on('event:sync', function() {
+    $scope.reviewGame = Sync.getData();
+  });
+
+  // ng-show router
+  $scope.goto = function(show, data) {
+    if (show == 'review') {
+      if (data) 
+        $scope.reviewGame = data;
+      if ($scope.reviewGame.state == "PLAYING") 
+        Sync.start($scope.reviewGame.id, 1500);
+      $scope.show = show;
     }
-  }
-
-  function updateReviewGame() {
-    if ($scope.reviewGame) {
-      angular.forEach($scope.games, function(game) {
-        if ($scope.reviewGame.id === game.id) {
-          $scope.reviewGame = game;
-        }
+    else if (show === "stats") {
+      Sync.stop();
+      $http.get("stats/" + data.username).then(function(response) {
+        $scope.playerStats = response.data;
+        $scope.show = show;
       });
     }
-  }
-
-  // Long polling for near-real-time data
-  function sync() {
-    // Get up-to-moment game data
-    API.get("games").then(function(response) {
-      $scope.games = response.data;
-      $scope.ready = true;
-      updateReviewGame();
-    });
-
-    // Get list of available guns
-    API.get("guns").then(function(guns) {
-      $scope.guns = guns;
-    });
-
-    $timeout(sync, 2000);
-  };
-
-  sync();
-
-  // Display selected game
-  $scope.review = function(game) {
-    if ($scope.reviewGame == null || $scope.reviewGame.id != game) {
-      $scope.reviewGame = game;
+    else {
+      Sync.stop();
+      $scope.show = show;
     }
-  };
-
-  $scope.stats = function(player) {
-    API.get("stats/" + player.username).then(function(response) {
-      var data = response.data;
-      console.log(data);
-      $scope.playerStats = data;
-      $scope.show = "stats";
-    });
   }
 
 });
-
-var module2 = angular.module('lasertag.directives', []);

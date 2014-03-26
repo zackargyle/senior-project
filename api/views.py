@@ -81,7 +81,10 @@ class PlayerStats(APIView):
                 if instance.score > player_['high_score']:
                     player_['high_score'] = instance.score
 
-            player_['shot_perc'] = round(total_hits / float(total_shots),2) * 100
+            if total_shots == 0:
+                player_['shot_perc'] = 100
+            else:
+                player_['shot_perc'] = round(total_hits / float(total_shots),2) * 100
 
             return Response(player_)
         except ObjectDoesNotExist:
@@ -158,10 +161,27 @@ class GameList(APIView):
     ''' Get data for all games, its teams, and its players '''
 
     def get(self, request):
+        games = Game.objects.all().order_by('-time_played')
+
+        # Query Parameters
+        limit = request.GET.get('limitTo')
+        start = request.GET.get('startAt')
+        state = request.GET.get('state')
+        mode  = request.GET.get('mode')
+
+        if limit is not None:
+            if start is not None:
+                games = games[start:start+limit]
+            else:
+                games = games[0:limit]
+        
+        if state is not None:
+            games = games.filter(state=state)
+
+        if mode is not None:
+            games = games.filter(mode=mode)
+
         games_ = []
-
-        games = Game.objects.all()
-
         for game in games:
             games_.append(getGameData(game))
 
@@ -183,7 +203,6 @@ class GameJoin(APIView):
 
         # Past Wait State
         if game.state == 'NEW':
-            print 
             if (datetime.datetime.utcnow() - game.time_played.replace(tzinfo=None)).total_seconds() > START_DELAY:
                 game.state = 'PLAYING'
                 game.save()
@@ -308,12 +327,12 @@ class Sync(APIView):
         if game.state == 'FINISHED':
             player_instance = PlayerInstance.objects.get(id=data["player_id"])
             return getUpdates(game, player_instance)
-        elif game.time_limit and timeLeft(game) <= 0:
+        elif game.time_limit is not None and timeLeft(game) <= 0:
             game.state = 'FINISHED'
             game.save()
             player_instance = PlayerInstance.objects.get(id=data["player_id"])
             return getUpdates(game, player_instance)
-        elif game.score_limit and scoreLimitReached(game):
+        elif game.score_limit is not None and scoreLimitReached(game):
             game.state = 'FINISHED'
             game.save()
             player_instance = PlayerInstance.objects.get(id=data["player_id"])

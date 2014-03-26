@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="../assets/less/laser-warfare/base.css"/>
   <script src="../assets/lib/angular/angular.min.js"></script>
   <script src="../assets/js/controllers.js"></script>
+  <script src="../assets/js/services.js"></script>
   <script src="../assets/js/app.js"></script>
 
 </head>
@@ -19,15 +20,17 @@
   <img src="assets/img/loading.png" class="loading" ng-hide="ready">
   <div id="loadingText" ng-hide="ready">Loading</div>
 
-  <div style="text-align:center" ng-show="ready">
+  <div id='content-body' ng-show="ready">
     <img src="assets/img/logo.png">
 
-    <div ng-show="show == 'review'" style="margin-top:2%">
-    	<header ng-show="reviewGame == null">Review a Game</header>
-    	<div class="review-list" ng-show="reviewGame == null" ng-repeat="game in games|orderBy:'-time_played'|limitTo:10" ng-click="review(game)">
-        Time Played: {$ game.time_played|date:'MM/dd/yyyy @ h:mma'  $}, Mode: {$ modeDisplayByVal(game.mode)  $}
+    <div style="margin-top:2%">
+      <div ng-show="show == 'games'">
+        <header>Review a Game</header>
+      	<div class="review-list" id="gameList" ng-repeat="game in games|orderBy:'-time_played'|limitTo:10" ng-click="goto('review',game)">
+          Time Played: {$ game.time_played|date:'MM/dd/yyyy @ h:mma'  $}, Mode: {$ game.mode  $}
+        </div>
       </div>
-      <div id="review-data" ng-show="reviewGame != null">
+        <div class="review-data" ng-show="show == 'review'">
 
         <div ng-show="reviewGame.mode == 'TEAMS'" ng-repeat="team in reviewGame.teams">
           <table class="new-game-table">
@@ -40,7 +43,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr class="review-list" ng-repeat="player in reviewGame.players|filter:{team_name:team.name}" ng-click="stats(player)">
+              <tr class="review-list" ng-repeat="player in reviewGame.players|filter:{team_name:team.name}" ng-click="goto('stats',player)">
                 <td>{$ $index + 1 $}</td>
                 <td>{$ player.username $}</td>
                 <td>{$ player.score $}</td>
@@ -60,7 +63,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr class="review-list" ng-repeat="player in reviewGame.players" ng-click="stats(player)">
+                <tr class="review-list" ng-repeat="player in reviewGame.players" ng-click="goto('stats',player)">
                   <td>{$ $index + 1 $}</td>
                   <td>{$ player.username  $}</td>
                   <td>{$ player.score  $}</td>
@@ -68,12 +71,12 @@
               </tbody>
             </table>
         </div>
-        <div class="sp-button" ng-click="reviewGame = null">Back</div>
+        <div class="sp-button" ng-click="goto('games')">Back</div>
 
       </div>
 	  </div>
 
-    <div ng-show="show == 'stats'">
+    <div class="review-data" ng-show="show == 'stats'">
       <h2>{$ playerStats.username $}</h2>
       <table class="new-game-table">
         <thead>
@@ -116,7 +119,7 @@
           </tr>
         </tbody>
       </table>
-      <div class="sp-button" ng-click="show = 'review'">Back</div>
+      <div class="sp-button" ng-click="goto('review')">Back</div>
     </div>
 
   </div>
