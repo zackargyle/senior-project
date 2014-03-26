@@ -25,8 +25,12 @@
 
     <div style="margin-top:2%">
       <div ng-show="show == 'games'">
-        <header>Review a Game</header>
-      	<div class="review-list" id="gameList" ng-repeat="game in games|orderBy:'-time_played'|limitTo:10" ng-click="goto('review',game)">
+        <header>
+          <img class='pagination' ng-class='{disabled:currentPage==0}' src='../assets/img/prev.png' width='23px' ng-click="currentPage=currentPage-1">
+          Review a Game
+          <img class='pagination' ng-class='{disabled:currentPage>=games.length/pageSize - 1}' src='../assets/img/next.png' width='23px' ng-click="currentPage=currentPage+1">
+        </header>
+      	<div class="review-list" id="gameList" ng-repeat="game in games|startFrom:currentPage*pageSize|limitTo:pageSize" ng-click="goto('review',game)">
           Time Played: {$ game.time_played|date:'MM/dd/yyyy @ h:mma'  $}, Mode: {$ game.mode  $}
         </div>
       </div>

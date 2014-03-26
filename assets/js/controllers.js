@@ -4,10 +4,12 @@ module1.controller('homeCtrl', function($rootScope, $scope, $http, Sync) {
   $scope.ready = false;
   $scope.show = "games"; // games, review, stats
   $scope.games = [];
+  $scope.currentPage = 0;
+  $scope.pageSize = 10;
 
   // Grab games
   function getGames(page) {
-    $http.get("games?limitTo=10&startAt=" + page * 10)
+    $http.get("games")
       .then(function(response) {
         $scope.games = response.data;
         if (!$scope.ready) $scope.ready = true;
