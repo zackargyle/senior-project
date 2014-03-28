@@ -326,7 +326,7 @@ class Sync(APIView):
             "hits_taken": [4,4,4]
         }
     '''
-    def put(self, request, pk, format=None):
+    def post(self, request, pk, format=None):
         game = Game.objects.get(id=pk)
         data = request.DATA
 
