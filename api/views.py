@@ -170,8 +170,8 @@ class GameList(APIView):
         games = Game.objects.all().order_by('-time_played')
 
         # Query Parameters
-        limit = request.GET.get('limitTo')
-        start = request.GET.get('startAt')
+        limit = int(request.GET.get('limitTo'))
+        start = int(request.GET.get('startAt'))
         state = request.GET.get('state')
         mode  = request.GET.get('mode')
         joinable = request.GET.get('joinable')

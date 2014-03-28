@@ -31,7 +31,7 @@
           <img class='pagination' ng-class='{disabled:currentPage>=games.length/pageSize - 1}' src='../assets/img/next.png' width='23px' ng-click="currentPage=currentPage+1">
         </header>
       	<div class="review-list" id="gameList" ng-repeat="game in games|startFrom:currentPage*pageSize|limitTo:pageSize" ng-click="goto('review',game)">
-          Time Played: {$ game.time_played|date:'MM/dd/yyyy @ h:mma'  $}, Mode: {$ game.mode  $}
+          Time Played: {$ game.time_played|date:'MM/dd/yyyy @ h:mma'  $}, Mode: {$ modes[game.mode]  $}
         </div>
       </div>
         <div class="review-data" ng-show="show == 'review'">

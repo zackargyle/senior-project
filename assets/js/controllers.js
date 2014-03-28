@@ -7,6 +7,13 @@ module1.controller('homeCtrl', function($rootScope, $scope, $http, Sync) {
   $scope.currentPage = 0;
   $scope.pageSize = 10;
 
+  $scope.modes = {
+    FREE: "Free for all",
+    TEAMS: "Teams",
+    JUGGERNAUT: "Juggernaut", 
+    FLAG: "Capture the flag"
+  }
+
   // Grab games
   function getGames(page) {
     $http.get("games")
@@ -27,7 +34,7 @@ module1.controller('homeCtrl', function($rootScope, $scope, $http, Sync) {
     if (show == 'review') {
       if (data) 
         $scope.reviewGame = data;
-      if ($scope.reviewGame.state == "PLAYING") 
+      if ($scope.reviewGame.state != "FINISHED") 
         Sync.start($scope.reviewGame.id, 1500);
       $scope.show = show;
     }
