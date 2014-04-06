@@ -250,7 +250,7 @@ class GameJoin(APIView):
         if game.time_limit is not None:
             time_left = timeLeft(game);
 
-        return Response({'game_id': game.id, 'player_id': instance.id, 'team_id': team, 'time_left': time_left})
+        return Response({'game_id': game.id, 'player_id': instance.id, 'team_id': team, 'time_left': time_left, 'time_limit': game.time_limit})
 
 
 class GameStart(APIView):
@@ -287,7 +287,7 @@ class GameStart(APIView):
 
         team_id = instance.team.id if instance.team else None
 
-        time_left = None
+        time_left = 60
         if game.time_limit is not None:
             time_left = timeLeft(game);
 
