@@ -214,7 +214,7 @@ class GameJoin(APIView):
             "gun_id": 4
         }
     '''
-    def put(self, request, pk, format=None):
+    def post(self, request, pk, format=None):
         data = request.DATA
         game = Game.objects.get(id=pk)
 
