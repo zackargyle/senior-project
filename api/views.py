@@ -110,6 +110,10 @@ class GunList(APIView):
 
 
 def getGameData(game):
+    time_left = None
+    if game.time_limit is not None:
+        time_left = timeLeft(game);
+            
     game_ = { 
         'id': game.id,
         'mode': game.mode, 
@@ -118,7 +122,8 @@ def getGameData(game):
         'players': [],
         'time_limit': game.time_limit,
         'score_limit': game.score_limit,
-        'time_played': game.time_played
+        'time_played': game.time_played,
+        'time_left': time_left
     }
 
     teams, players = None, None
