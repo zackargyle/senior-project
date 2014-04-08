@@ -14,7 +14,8 @@ START_DELAY = 60 #seconds
 
 def timeLeft(game):
     time_played = (datetime.datetime.utcnow() - game.time_played.replace(tzinfo=None)).total_seconds()
-    return int(round(game.time_limit + START_DELAY - time_played))
+    time_remaining = int(round(game.time_limit + START_DELAY - time_played))
+    return time_remaining if time_remaining > 0 else 0
     
 def scoreLimitReached(game):
     if game.mode == 'TEAMS':
