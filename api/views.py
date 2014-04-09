@@ -11,6 +11,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 START_DELAY = 60 #seconds
+COOLDOWN = 30 #seconds
 
 def timeLeft(game):
     time_played = (datetime.datetime.utcnow() - game.time_played.replace(tzinfo=None)).total_seconds()
@@ -378,8 +379,14 @@ class Sync(APIView):
 
         # Game finished?
         if game.state == 'FINISHED':
-            player_instance = PlayerInstance.objects.get(id=data["player_id"])
-            return getUpdates(game, player_instance)
+            # Cooldown sync for 30 seconds past game end
+            if game.time_limit is not None:
+                if (datetime.datetime.utcnow() - game.time_played.replace(tzinfo=None)).total_seconds() >= game.time_limit + START_DELAY + COOLDOWN:
+                    player_instance = PlayerInstance.objects.get(id=data["player_id"])
+                    return getUpdates(game, player_instance)
+            else:
+                player_instance = PlayerInstance.objects.get(id=data["player_id"])
+                return getUpdates(game, player_instance)
         elif game.time_limit is not None and timeLeft(game) <= 0:
             game.state = 'FINISHED'
             game.save()
@@ -391,7 +398,7 @@ class Sync(APIView):
             player_instance = PlayerInstance.objects.get(id=data["player_id"])
             return getUpdates(game, player_instance)
 
-        # Ok, it is valid. Do stuff
+        # Ok to sync
         try:
             player_instance = PlayerInstance.objects.get(id=data["player_id"])
             player_instance.num_shots = data["shots_fired"]
