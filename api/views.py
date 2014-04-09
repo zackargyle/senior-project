@@ -47,6 +47,7 @@ def getPlayerStats(player, rank):
         team_ = player.team.name
 
     player_ = {
+        'username': player.player.username,
         'time_played': player.game.time_played, 
         'team_name': team_,
         'num_shots': player.num_shots,
