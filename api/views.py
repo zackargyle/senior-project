@@ -40,6 +40,50 @@ class ShotList(generics.ListAPIView):
     model = Shot
     serializer_class = ShotSerializer
 
+def getPlayerStats(player, rank):
+    team_ = None
+
+    if player.team is not None:
+        team_ = player.team.name
+
+    player_ = {
+        'time_played': player.game.time_played, 
+        'team_name': team_,
+        'num_shots': player.num_shots,
+        'hits_landed': player.hits_landed,
+        'hits_taken': player.hits_taken,
+        'score': player.score,
+        'rank': rank
+    }
+    return player_
+
+class GameStats(APIView):
+    def get(self, request, pk):
+        try:
+            game = Game.objects.get(pk=pk)
+            players = PlayerInstance.objects.filter(game=game).order_by('-score')
+
+            game_ = {'mode': game.mode, 'players': [], 'high_score': -10000, 'low_score': 10000}
+
+            for index, player in enumerate(players):
+                instance = getPlayerStats(player, index + 1)
+
+                if player.num_shots == 0:
+                    instance['shot_perc'] = 100
+                else:
+                    instance['shot_perc'] = int(round(100 * player.hits_landed / float(player.num_shots)))
+
+                if instance['score'] > game_['high_score']:
+                    game_['high_score'] = instance['score']
+                if instance['score'] < game_['low_score']:
+                    game_['low_score'] = instance['score']
+
+                game_['players'].append(instance)
+
+            return Response(game_)
+        except ObjectDoesNotExist:
+            return Response("No game with that id")
+
 
 class PlayerStats(APIView):
     def get(self, request, username):
@@ -52,27 +96,14 @@ class PlayerStats(APIView):
             total_shots = 0
 
             for instance in instances:
-                team_ = None
-
-                if instance.team is not None:
-                    team_ = instance.team.name
-
                 frenemies = PlayerInstance.objects.filter(game=instance.game).order_by('-score')
 
-                rank = None
+                rank = 0
                 for index, dude in enumerate(frenemies):
                     if dude == instance:
                         rank = index + 1
 
-                instance_ = {
-                    'time_played': instance.game.time_played, 
-                    'team_name': team_,
-                    'num_shots': instance.num_shots,
-                    'hits_landed': instance.hits_landed,
-                    'hits_taken': instance.hits_taken,
-                    'score': instance.score,
-                    'rank': rank
-                }
+                instance_ = getPlayerStats(instance, rank)
 
                 player_['instances'].append(instance_)
                 player_['score_total'] += instance.score
@@ -85,7 +116,7 @@ class PlayerStats(APIView):
             if total_shots == 0:
                 player_['shot_perc'] = 100
             else:
-                player_['shot_perc'] = round(total_hits / float(total_shots),2) * 100
+                player_['shot_perc'] = int(round(100 * total_hits / float(total_shots),2))
 
             return Response(player_)
         except ObjectDoesNotExist:
