@@ -360,7 +360,7 @@ class Sync(APIView):
         {
             "player_id": 3,
             "shots_fired": 15,
-            "hits_taken": [4,4,4]
+            "hits_taken": [4,4,4] -> gun_id
         }
     '''
     def post(self, request, pk, format=None):
@@ -419,24 +419,9 @@ def getUpdates(game, player_):
 
     return Response({'team_scores': team_scores,'player_scores': player_scores, 'score': player_.score, 'game_state': game.state})
 
-
-def getPlayerByFrequency(game, frequency):
-    guns = Gun.objects.all().order_by('frequency')
-    gun_used = guns[0]
-
-    # Get the gun that was used to shoot the player
-    for gun in guns:
-        if gun.frequency < frequency:
-            gun_used = gun
-        elif (gun.frequency - frequency) < (frequency - gun_used.frequency):
-            gun_used = gun
-
-    # Return the player using the gun
-    return PlayerInstance.objects.get(game=game, gun=gun_used)
-
 def updateShots(game, hits, player_hit):
-    for hit in hits:
-        player_shooting = getPlayerByFrequency(game, hit)
+    for gun_id in hits:
+        player_shooting = PlayerInstance.objects.get(game=game, gun=gun_id)
 
         # Cannot shoot yourself
         if player_shooting.id == player_hit.id:
