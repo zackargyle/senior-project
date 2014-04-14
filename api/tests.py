@@ -60,7 +60,7 @@ class APITests(TestCase):
 
         url = '/join/' + str(game1.id)
         print '\nJoining free-for-all'
-        response = self.client.put(url, json.dumps(data), content_type="application/json")
+        response = self.client.post(url, json.dumps(data), content_type="application/json")
         self.assertEqual(response.status_code, 200)
         print '    ' + str(response.data)
         print 'Free-for-all successfully joined'
@@ -74,7 +74,7 @@ class APITests(TestCase):
 
         url = '/join/' + str(game2.id)
         print '\nJoining team deathmatch'
-        response = self.client.put(url, json.dumps(data), content_type="application/json")
+        response = self.client.post(url, json.dumps(data), content_type="application/json")
         self.assertEqual(response.status_code, 200)
         print '    ' + str(response.data)
         print 'Team deathmatch successfully joined'
