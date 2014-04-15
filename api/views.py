@@ -327,7 +327,7 @@ class GameStart(APIView):
 
         team_id = instance.team.id if instance.team else None
 
-        time_left = 60
+        time_left = None
         if game.time_limit is not None:
             time_left = timeLeft(game);
 
